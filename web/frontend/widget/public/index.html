@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!-- <link rel="stylesheet" href="/index.css" /> -->
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+    <style>
+      html,
+      body,
+      #root {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- <div id="root"></div> -->
+    <button data-add-to-cart>CLICK ME</button>
+    <div style="margin-top: 20px">
+      <div class="add-to-cart">
+        <div class="product-form-submit-wrap">
+          <input class="button" type="submit" value="Ajouter au panier" />
+          <div class="add-to-cart-loader"></div>
+        </div>
+      </div>
+    </div>
+    <form
+      method="post"
+      action="/cart/add"
+      id="product-form-4425732816986"
+      accept-charset="UTF-8"
+      class="shopify-product-form"
+      enctype="multipart/form-data"
+      data-product-form="4425732816986"
+    >
+      <input type="hidden" name="form_type" value="product" /><input
+        type="hidden"
+        name="utf8"
+        value="✓"
+      />
+
+      <input
+        class="product-select"
+        name="id"
+        value="32227720790106"
+        type="hidden"
+        data-variant-title="Default Title"
+      />
+
+      <div id="infiniteoptions-container"></div>
+      <div id="uploadery-container"></div>
+
+      <div class="input-wrapper product-quantity">
+        <div class="product-quantity-container">
+          <div class="qtydiv">
+            <label for="Quantity" class="quantity-selector">Quantité</label>
+            <div class="qtybox">
+              <span class="btnqty qtyminus icon icon-minus-btn">-</span>
+              <!-- <input
+                type="text"
+                id="quantity"
+                name="quantity"
+                value="1"
+                min="1"
+                class="input-field product-quantity-input quantity-selector quantity-input"
+                readonly=""
+              /> -->
+              <span class="btnqty qtyplus icon icon-plus-btn">+</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 20px">
+          <div class="add-to-cart">
+            <div class="product-form-submit-wrap">
+              <input
+                class="button yolo"
+                type="submit"
+                value="Ajouter au panier"
+              />
+              <div class="add-to-cart-loader"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div
+      data-label="Liquid"
+      id="m-1597077929325"
+      class="module-wrap"
+      data-icon="gpicon-liquid"
+      data-ver="1.0"
+      data-id="1597077929325"
+      data-name="Right click on the module, then choose Edit Html / Liquid option to start writing your custom code."
+      style="background-image: none"
+    >
+      <div
+        class="module gf_module- gf_module--lg gf_module--md gf_module--sm gf_module--xs"
+      >
+        <div id="new-form">
+          <p style="text-align: left">
+            <span
+              id="title-offer-WB"
+              style="color: black; font-size: 0.9em"
+            ></span>
+          </p>
+          <div
+            id="id35435000725667"
+            class="new-form-option selectable"
+            data-id="35435000725667"
+            style="
+              display: flex;
+              align-items: center;
+              padding: 10px 10px 10px 0px;
+              cursor: pointer;
+              border-radius: 5px;
+              margin-bottom: 15px;
+              border: 2px solid rgb(198, 198, 198);
+              background-color: white;
+              font-weight: normal;
+            "
+          >
+            <div
+              class="value-left"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <span
+                class="checkedWB"
+                style="
+                  display: block;
+                  width: 17px;
+                  height: 17px;
+                  border: 3px solid rgb(244, 244, 244);
+                  background-color: rgb(244, 244, 244);
+                  border-radius: 50%;
+                  margin-left: 10px;
+                  margin-right: 10px;
+                "
+              ></span>
+            </div>
+            <div
+              class="value-right"
+              style="max-width: calc(100% - 50px); text-align: left"
+            >
+              <p
+                class="title-variant"
+                style="font-size: 1.2em; text-align: left; margin: 0px"
+              >
+                1 Ceinture
+              </p>
+              <p
+                class="price-new-form"
+                style="text-align: left; margin: 0px 0px 10px; font-size: 0.9em"
+              >
+                <span
+                  class="first-price-WB"
+                  style="margin-right: 5px; color: #0586c1"
+                  >19.90€</span
+                >
+                <span
+                  class="second-price-WB"
+                  style="color: #989898; text-decoration: line-through"
+                >
+                  <s>34.90€</s></span
+                >
+              </p>
+              <div
+                id="div-second-select-35435000725667-1"
+                class="div-select2"
+                data-id="35435000725667"
+                style="display: none"
+              >
+                <p
+                  style="
+                    font-size: 0.8em;
+                    margin: 0;
+                    margin-top: 3px;
+                    margin-right: 5px;
+                    margin-bottom: 10px;
+                    float: left;
+                  "
+                ></p>
+                <select
+                  class="select-class-second"
+                  onchange="changePrice();"
+                  style="
+                    position: static;
+                    opacity: 1;
+                    display: block;
+                    background-position: right 10px center;
+                    border-radius: 3px;
+                    border: 1px solid #0586c1;
+                    font-size: 16px;
+                    float: left;
+                    min-width: 100px;
+                    max-width: auto;
+                    width: auto;
+                    min-height: 25px;
+                    height: 25px;
+                    padding: 0;
+                    padding-left: 3px;
+                    padding-right: 25px;
+                  "
+                  id="add-option-35435000725667-1"
+                  name="Variants"
+                  size="1"
+                ></select>
+                <p style="clear: both"></p>
+              </div>
+            </div>
+          </div>
+          <div
+            id="id35435000791203"
+            class="new-form-option selectedWB"
+            data-id="35435000791203"
+            style="
+              display: flex;
+              align-items: center;
+              padding: 10px 10px 10px 0px;
+              cursor: pointer;
+              border-radius: 5px;
+              margin-bottom: 15px;
+              border: 2px solid rgb(5, 134, 193);
+              background-color: rgb(237, 250, 253);
+              font-weight: bold;
+            "
+          >
+            <div
+              class="value-left"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <span
+                class="checkedWB"
+                style="
+                  display: block;
+                  width: 17px;
+                  height: 17px;
+                  border: 3px solid rgb(244, 244, 244);
+                  background-color: rgb(5, 134, 193);
+                  border-radius: 50%;
+                  margin-left: 10px;
+                  margin-right: 10px;
+                "
+              ></span>
+            </div>
+            <div
+              class="value-right"
+              style="max-width: calc(100% - 50px); text-align: left"
+            >
+              <span
+                id="best-title"
+                style="
+                  font-size: 0.9em;
+                  line-height: 1;
+                  color: rgb(5, 134, 193);
+                  font-weight: bold;
+                  visibility: hidden;
+                "
+                >Meilleure vente</span
+              >
+              <p
+                class="title-variant"
+                style="font-size: 1.2em; text-align: left; margin: 0px"
+              >
+                1 Ceinture = 2ème à -40%
+              </p>
+              <p
+                class="price-new-form"
+                style="text-align: left; margin: 0px 0px 10px; font-size: 0.9em"
+              >
+                <span
+                  class="first-price-WB"
+                  style="margin-right: 5px; color: #0586c1"
+                  >34.90€</span
+                >
+                <span
+                  class="second-price-WB"
+                  style="color: #989898; text-decoration: line-through"
+                >
+                  <s>68.80€</s></span
+                >
+              </p>
+              <div
+                id="div-second-select-35435000791203-1"
+                class="div-select2"
+                data-id="35435000791203"
+                style="display: none"
+              >
+                <p
+                  style="
+                    font-size: 0.8em;
+                    margin: 0;
+                    margin-top: 3px;
+                    margin-right: 5px;
+                    margin-bottom: 10px;
+                    float: left;
+                  "
+                ></p>
+                <select
+                  class="select-class-second"
+                  onchange="changePrice();"
+                  style="
+                    position: static;
+                    opacity: 1;
+                    display: block;
+                    background-position: right 10px center;
+                    border-radius: 3px;
+                    border: 1px solid #0586c1;
+                    font-size: 16px;
+                    float: left;
+                    min-width: 100px;
+                    max-width: auto;
+                    width: auto;
+                    min-height: 25px;
+                    height: 25px;
+                    padding: 0;
+                    padding-left: 3px;
+                    padding-right: 25px;
+                  "
+                  id="add-option-35435000791203-1"
+                  name="Variants"
+                  size="1"
+                ></select>
+                <p style="clear: both"></p>
+              </div>
+            </div>
+          </div>
+          <div
+            id="id35435000823971"
+            class="new-form-option selectable"
+            data-id="35435000823971"
+            style="
+              display: flex;
+              align-items: center;
+              padding: 10px 10px 10px 0px;
+              cursor: pointer;
+              border-radius: 5px;
+              margin-bottom: 15px;
+              border: 2px solid rgb(198, 198, 198);
+              background-color: white;
+              font-weight: normal;
+            "
+          >
+            <div
+              class="value-left"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+              "
+            >
+              <span
+                class="checkedWB"
+                style="
+                  display: block;
+                  width: 17px;
+                  height: 17px;
+                  border: 3px solid rgb(244, 244, 244);
+                  background-color: rgb(244, 244, 244);
+                  border-radius: 50%;
+                  margin-left: 10px;
+                  margin-right: 10px;
+                "
+              ></span>
+            </div>
+            <div
+              class="value-right"
+              style="max-width: calc(100% - 50px); text-align: left"
+            >
+              <p
+                class="title-variant"
+                style="font-size: 1.2em; text-align: left; margin: 0px"
+              >
+                2 Ceintures = 3ème offerte
+              </p>
+              <p
+                class="price-new-form"
+                style="text-align: left; margin: 0px 0px 10px; font-size: 0.9em"
+              >
+                <span
+                  class="first-price-WB"
+                  style="margin-right: 5px; color: #0586c1"
+                  >44.90€</span
+                >
+                <span
+                  class="second-price-WB"
+                  style="color: #989898; text-decoration: line-through"
+                >
+                  <s>104.70€</s></span
+                >
+              </p>
+              <div
+                id="div-second-select-35435000823971-1"
+                class="div-select2"
+                data-id="35435000823971"
+                style="display: none"
+              >
+                <p
+                  style="
+                    font-size: 0.8em;
+                    margin: 0;
+                    margin-top: 3px;
+                    margin-right: 5px;
+                    margin-bottom: 10px;
+                    float: left;
+                  "
+                ></p>
+                <select
+                  class="select-class-second"
+                  onchange="changePrice();"
+                  style="
+                    position: static;
+                    opacity: 1;
+                    display: block;
+                    background-position: right 10px center;
+                    border-radius: 3px;
+                    border: 1px solid #0586c1;
+                    font-size: 16px;
+                    float: left;
+                    min-width: 100px;
+                    max-width: auto;
+                    width: auto;
+                    min-height: 25px;
+                    height: 25px;
+                    padding: 0;
+                    padding-left: 3px;
+                    padding-right: 25px;
+                  "
+                  id="add-option-35435000823971-1"
+                  name="Variants"
+                  size="1"
+                ></select>
+                <p style="clear: both"></p>
+              </div>
+            </div>
+          </div>
+          <div
+            data-add-to-cart=""
+            id="new-form-atc"
+            style="
+              width: 100%;
+              cursor: pointer;
+              background-color: rgb(5, 134, 193);
+              color: rgb(255, 255, 255);
+              text-align: center;
+              font-size: 1.2em;
+              margin-top: 10px;
+              margin-bottom: 15px;
+              padding: 20px 0px;
+              font-weight: bold;
+            "
+          >
+            Ajouter au panier
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

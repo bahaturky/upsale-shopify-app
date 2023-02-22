@@ -1,0 +1,18 @@
+{
+  "development": {
+    "host": "localhost",
+    "username": "julian",
+    "password": 1234,
+    "logging": false,
+    "database": "island-dev",
+    "dialect": "postgres"
+  },
+  "production": {
+    "host": "localhost",
+    "username": "",
+    "password": "",
+    "logging": false,
+    "database": "island-prod",
+    "dialect": "postgres"
+  }
+}

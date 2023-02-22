@@ -1,0 +1,348 @@
+import { join } from "path";
+import { readFileSync } from "fs";
+import express from "express";
+import serveStatic from "serve-static";
+import request from "request";
+import { LATEST_API_VERSION } from "@shopify/shopify-api";
+import Shopify from "shopify-api-node";
+// console.log(process.env);
+import shopify, { initializeShop } from "../shopify.js";
+import productCreator from "../product-creator.js";
+import GDPRWebhookHandlers from "../gdpr.js";
+
+import UpsaleHandler from "./handlers/upsales.handlers.js";
+import ShopHandler from "./handlers/shops.handlers.js";
+import AnalyticsHandler from "./handlers/analytics.handlers.js";
+import EarlyHandler from "./handlers/earlybirds.handlers.js";
+// import WebhooksHandler from "./handlers/webhooks.js";
+import models from "../models/index.js";
+
+// @ts-ignore
+const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
+
+const HOST = process.env.HOST;
+
+const STATIC_PATH =
+    process.env.NODE_ENV === "production"
+        ? `${process.cwd()}/frontend/dist`
+        : `${process.cwd()}/frontend/`;
+
+const app = express();
+
+// Set up Shopify authentication and webhook handling
+app.get(shopify.config.auth.path, shopify.auth.begin());
+app.get(
+    shopify.config.auth.callbackPath,
+    shopify.auth.callback(),
+    async (req, res, next) => {
+        const { shop, accessToken } = res.locals.shopify.session;
+
+        const shopifyNode = new Shopify({
+            shopName: shop.split(".myshopify")[0],
+            accessToken,
+            apiVersion: LATEST_API_VERSION,
+        });
+
+        res.locals.shopifyNode = shopifyNode;
+
+        const shopData = await shopifyNode.shop.get();
+        console.log(req.headers["x-forwarded-for"]);
+
+        const shopDB = await models.Shop.findOne({
+            where: {
+                domain: shop,
+            },
+            raw: true,
+        });
+
+        await initializeShop(res, shopifyNode, shopData);
+        // console.log(shop, accessToken);
+        // // const shopData = await;
+        // // const shopData = await shopify.shop.get();
+        // console.log(shopData);
+        request(
+            {
+                method: "POST",
+                url: "https://platform.shoffi.app/v1/newMerchant",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    api_key: process.env.SHOPIFY_API_KEY,
+                    shopName: shop,
+                    appId: shopData.id,
+                    XFF: req.headers["x-forwarded-for"],
+                }),
+            },
+            function (error, response) {
+                if (error) {
+                    console.log("shoffi error", error);
+                }
+                console.log("shoffi response.body", response.body);
+            }
+        );
+
+        next();
+    },
+    shopify.redirectToShopifyOrAppRoot()
+);
+
+// app.post(
+//     '/webhooks/app/uninstalled',
+// )
+app.post(
+    shopify.config.webhooks.path,
+    shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
+);
+
+app.get("/upsales/:upsaleId/redirect", async (req, res) => {
+    try {
+        const { shop, accessToken } = res.locals.shopify.session;
+        const { upsaleId } = req.params;
+
+        const upsale = await models.Upsale.findOne({
+            where: { id: upsaleId },
+            include: models.Shop,
+        });
+
+        if (!upsale) {
+            res.sendStatus(404);
+            return;
+        }
+
+        const shopify = new Shopify({
+            shopName: upsale.shop.domain,
+            accessToken: upsale.shop.accessToken,
+            apiVersion: LATEST_API_VERSION,
+            timeout: 1000,
+        });
+
+        const query = `
+            query productById($id: ID!) {
+                product(id: $id) {
+                    handle
+                }
+            }
+        `;
+
+        const { product } = await shopify.graphql(query, { id: upsale.gId });
+
+        if (!product) {
+            res.sendStatus(404);
+            return;
+        }
+
+        res.redirect(
+            `https://${upsale.shop.domain}/products/${product.handle}`
+        );
+    } catch (e) {
+        console.error(e);
+        res.sendStatus(500);
+    }
+});
+
+app.get("/upsales/:upsaleId/product", async (req, res) => {
+    try {
+        const { upsaleId } = req.params;
+
+        const upsale = await models.Upsale.findOne({
+            where: { id: upsaleId },
+            include: models.Shop,
+        });
+
+        if (!upsale) {
+            res.sendStatus(404);
+            return;
+        }
+
+        const shopify = new Shopify({
+            shopName: upsale.shop.domain,
+            accessToken: upsale.shop.accessToken,
+            apiVersion: process.env.API_VERSION,
+            timeout: 1000,
+        });
+
+        const query = `
+            query productById($id: ID!) {
+            product(id: $id) {
+                title
+                description
+                handle
+                images(first: 10) {
+                edges {
+                    node {
+                    id
+                    url
+                    altText
+                    }
+                }
+                }
+                variants(first: 10) {
+                edges {
+                    node {
+                    id
+                    image {
+                        id
+                        url
+                        altText
+                    }
+                    }
+                }
+                }
+            }
+            }
+        `;
+
+        const { product } = await shopify.graphql(query, { id: upsale.gId });
+
+        if (!product) {
+            res.sendStatus(404);
+            return;
+        }
+
+        res.json(
+            _.mapValues(product, (value, key) =>
+                value.edges ? value.edges.map((i) => i.node) : value
+            )
+        );
+    } catch (e) {
+        console.error(e);
+
+        res.sendStatus(500);
+    }
+});
+
+app.get("/upsales/:upsaleId/discount", async (req, res) => {
+    try {
+        const { upsaleId } = req.params;
+
+        const upsale = await models.Upsale.findOne({
+            where: { id: upsaleId },
+            include: models.Shop,
+        });
+
+        if (!upsale || !upsale.customDiscountCode) {
+            res.sendStatus(404);
+            return;
+        }
+
+        const shopify = new Shopify({
+            shopName: upsale.shop.domain,
+            accessToken: upsale.shop.accessToken,
+            apiVersion: process.env.API_VERSION,
+            timeout: 1000,
+        });
+
+        const query = `
+            query discountByCode {
+                priceRules (first: 190) {
+                    edges {
+                    node {
+                        id
+                        valueV2 {
+                        ... on MoneyV2 {
+                            amount
+                        }
+                        ... on PricingPercentageValue {
+                            percentage
+                        }
+                        }
+                        discountCodes(first: 1) {
+                        edges {
+                            node {
+                            code
+                            }
+                        }
+                        }
+                    }
+                    }
+                }
+            }
+        `;
+
+        const { priceRules } = await shopify.graphql(query);
+        const priceRule = priceRules?.edges?.find((i) =>
+            i.node.discountCodes.edges.find(
+                (j) => j.node.code === upsale.customDiscountCode
+            )
+        );
+
+        if (!priceRule) {
+            res.sendStatus(404);
+            return;
+        }
+
+        res.json(priceRule.node.valueV2);
+    } catch (e) {
+        console.error(e);
+
+        res.sendStatus(500);
+    }
+});
+
+app.get("/scripts/island.js", async (req, res) => {
+    const response = await ShopHandler.getPublicData(req, res);
+
+    let script = null;
+
+    if (response) {
+        const { settings, upsales, shop } = response;
+        if (shop && shop.isSubscriptionActive) {
+            script = `
+                islandUpsell={settings:${settings},upsales:${JSON.stringify(
+                upsales
+            )},shop:${JSON.stringify(shop)},HOST:"${HOST}"};
+
+                var widget = document.createElement('script');
+                widget.setAttribute('src', '${HOST}/widget/build/static/js/bundle.min.js');
+                widget.setAttribute('type', 'text/javascript');
+                document.body.appendChild(widget);
+            `;
+            res.type(".js");
+        }
+    }
+
+    res.send(script);
+});
+
+app.get("/widget/build/(.*)", async (req, res) => {
+    console.log(req.path);
+    res.send("asdf");
+});
+
+// All endpoints after this point will require an active session
+app.use("/api/*", shopify.validateAuthenticatedSession());
+
+app.use(express.json());
+
+app.get("/api/products/count", async (_req, res) => {
+    const countData = await shopify.api.rest.Product.count({
+        session: res.locals.shopify.session,
+    });
+    res.status(200).send(countData);
+});
+
+app.get("/api/products/create", async (_req, res) => {
+    let status = 200;
+    let error = null;
+
+    try {
+        await productCreator(res.locals.shopify.session);
+    } catch (e) {
+        console.log(`Failed to process products/create: ${e.message}`);
+        status = 500;
+        error = e.message;
+    }
+    res.status(status).send({ success: status === 200, error });
+});
+
+app.use(serveStatic(STATIC_PATH, { index: false }));
+
+app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
+    return res
+        .status(200)
+        .set("Content-Type", "text/html")
+        .send(readFileSync(join(STATIC_PATH, "index.html")));
+});
+
+app.listen(PORT);

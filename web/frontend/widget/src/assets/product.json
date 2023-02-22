@@ -1,0 +1,121 @@
+{
+  "id": 5310953062561,
+  "title": "Blue Silk Tuxedo",
+  "body_html": "<p>Blue silk tuxedo with marbled aquatic pattern and dark lining. Sleeves are complete with rounded hem and black buttons.</p>",
+  "vendor": "Liam Fashions",
+  "product_type": "",
+  "created_at": "2020-06-22T08:28:34-04:00",
+  "handle": "blue-silk-tuxedo",
+  "updated_at": "2020-08-05T03:01:08-04:00",
+  "published_at": "2020-06-22T08:28:33-04:00",
+  "template_suffix": "",
+  "published_scope": "web",
+  "tags": "men",
+  "variants": [
+    {
+      "id": 34771724697761,
+      "product_id": 5310953062561,
+      "title": "xs",
+      "price": "20.00",
+      "sku": "",
+      "position": 1,
+      "compare_at_price": "45.00",
+      "fulfillment_service": "manual",
+      "inventory_management": "shopify",
+      "option1": "xs",
+      "option2": null,
+      "option3": null,
+      "created_at": "2020-06-22T08:28:34-04:00",
+      "updated_at": "2020-07-22T12:18:35-04:00",
+      "taxable": true,
+      "barcode": "",
+      "grams": 457,
+      "image_id": null,
+      "weight": 457,
+      "weight_unit": "g",
+      "requires_shipping": true
+    },
+    {
+      "id": 34771724730529,
+      "product_id": 5310953062561,
+      "title": "small - banana",
+      "price": "60.00",
+      "sku": "",
+      "position": 2,
+      "compare_at_price": "",
+      "fulfillment_service": "manual",
+      "inventory_management": "shopify",
+      "option1": "small - banana",
+      "option2": null,
+      "option3": null,
+      "created_at": "2020-06-22T08:28:34-04:00",
+      "updated_at": "2020-08-05T03:01:08-04:00",
+      "taxable": true,
+      "barcode": null,
+      "grams": 346,
+      "image_id": 18324326056097,
+      "weight": 346,
+      "weight_unit": "g",
+      "requires_shipping": true
+    }
+  ],
+  "options": [
+    {
+      "id": 6787477176481,
+      "product_id": 5310953062561,
+      "name": "Title",
+      "position": 1,
+      "values": ["xs", "small - banana"]
+    }
+  ],
+  "images": [
+    {
+      "id": 17475069149345,
+      "product_id": 5310953062561,
+      "position": 1,
+      "created_at": "2020-06-22T08:28:34-04:00",
+      "updated_at": "2020-06-22T08:28:34-04:00",
+      "alt": "Man wearing blue silk tuxedo",
+      "width": 925,
+      "height": 617,
+      "src": "https://cdn.shopify.com/s/files/1/0416/4281/9745/products/man-adjusts-blue-tuxedo-bowtie_925x_656f2a36-34a8-4db2-9701-c01e49e9e5c0.jpg?v=1592828914",
+      "variant_ids": []
+    },
+    {
+      "id": 18324320583841,
+      "product_id": 5310953062561,
+      "position": 2,
+      "created_at": "2020-08-05T02:59:45-04:00",
+      "updated_at": "2020-08-05T03:00:13-04:00",
+      "alt": null,
+      "width": 1200,
+      "height": 698,
+      "src": "https://cdn.shopify.com/s/files/1/0416/4281/9745/products/peter-pan.jpg?v=1596610813",
+      "variant_ids": []
+    },
+    {
+      "id": 18324326056097,
+      "product_id": 5310953062561,
+      "position": 3,
+      "created_at": "2020-08-05T03:00:13-04:00",
+      "updated_at": "2020-08-05T03:00:13-04:00",
+      "alt": null,
+      "width": 828,
+      "height": 752,
+      "src": "https://cdn.shopify.com/s/files/1/0416/4281/9745/products/meme-infopreneur.jpg?v=1596610813",
+      "variant_ids": [34771724730529]
+    }
+  ],
+  "image": {
+    "id": 17475069149345,
+    "product_id": 5310953062561,
+    "position": 1,
+    "created_at": "2020-06-22T08:28:34-04:00",
+    "updated_at": "2020-06-22T08:28:34-04:00",
+    "alt": "Man wearing blue silk tuxedo",
+    "width": 925,
+    "height": 617,
+    "src": "https://cdn.shopify.com/s/files/1/0416/4281/9745/products/man-adjusts-blue-tuxedo-bowtie_925x_656f2a36-34a8-4db2-9701-c01e49e9e5c0.jpg?v=1592828914",
+    "variant_ids": []
+  }
+}

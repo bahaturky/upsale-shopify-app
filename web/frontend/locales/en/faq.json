@@ -1,0 +1,60 @@
+{
+  "faq": [
+    {
+      "q": "What is this Upsell App ?",
+      "a": "Upsell is a popup that will be triggered by your customer once they click on \"add to cart\".  The popup will consist of products you will have chosen earlier that could be bought with the product (coffee bags is a nice upsell to a coffee machine) or that could simply be a better product (a better coffee machine). Out of all the popup we've tried, Upsell is the most powerful and simple sales funnel app."
+    },
+    {
+      "q": "How much should I earn by using this upsell app ?",
+      "a": "Simply enabling the popup on your store could result in an improvement of +20% of your Average Order Value (AOV)."
+    },
+    {
+      "q": "I did not understand, do i need to do something specific ?",
+      "a": "No. This app alone will increase your revenue without needing more trafic to your shop."
+    },
+    {
+      "q": "I can see you've created two products in my shop :  \"Gift packaging\" and \"Handwritten note\", please explain to me ?",
+      "a": "We've created a few products so you can see how your upsell popup will look like. Yet, let us be clear : only enable those products if you are able to provide them. We will not do it for you."
+    },
+    {
+      "q": "How many upsells should I setup ?",
+      "a": "To the best of our knowledge, as soon as you have over 6 Upsells, it will slightly decrease your conversion rate."
+    },
+    {
+      "q": "Can I translate your app to Chinese/Portuguese/French/etc ?",
+      "a": "Yes. Every important text of the popup can be translated to your own langage. Just go to the settings and change any text you want."
+    },
+    {
+      "q": "What are the key features of Upsell ?",
+      "a": "<ul><li>Create Upsell through an intuitive dashboard</li><li>Create Cross Sell through an intuitive dashboard.</li><li>Live Preview everything you're creating.</li><li>Customize everyhing : colors, texts, button shapes, popup design, etc.</li><li>Analytics of all the important KPI you'd need for such an upsell app.</li><li>The popup is 100% responsive</li></ul>"
+    },
+    {
+      "q": "Does Upsell compromise the loading time of my store ?",
+      "a": "No, it does not compromise the loading time of your store. The popup takes a few milliseconds to load and the customer will not notice it. The popup itself is ultra-lightweight.  We load the popup AFTER the page load is complete."
+    },
+    {
+      "q": "Should I use Upsell ?",
+      "a": "Brands like Apple, Google, MVMT, Raynair, Delta Airlines, Warby Parker, Uber Eats or Mc Donalds...they're all using upsells. You definitely should use one upsell popup. Conveniently, we've included most of said brands popups inside our app : Upsell."
+    },
+    {
+      "q": "I'm experiencing a bad ROI with the app, can you help ?",
+      "a": "Sure we can. You send us a message or chat with and we'll do everything in our power to help you improve your conversion rate. It's a win-win situation because we make money as long as you keep our app."
+    },
+    {
+      "q": "I'd like to contact you",
+      "a": "Send us an email to support@islandapps.co. We try our best to answer within 24h."
+    },
+    {
+      "q": "How do I setup the free shipping bar ?",
+      "a": "<ul><li>Go on your dashboard, then settings, then shipping then manage rate.</li><li>Here you can create a new specific rate for all orders which total price is above X.</li><li>X being the amount you start to offer for free the shipping fee.</li></ul><p>Here’s an example of our shipping settings, showing two weight-based rates and free shipping over $49:</p><img src=\"/img/faqs-shipping-settings.png\"></img>"
+    },
+    {
+      "q": "NEW FEATURE : Can I show the upsell popup on a specific page?",
+      "a": "Yes, you can. Go to the settings and scroll down to \"Advanced settings\". There you will find an option to only open the modal on some pages."
+    },
+    {
+      "q": "NEW FEATURE : Is it possible to prevent the popup from opening several times per session for a given visitor?",
+      "a": "Yes. Go to the settings and scroll down to \"Advanced settings\". There you will find an option to only display the popup once per session."
+    }
+  ]
+}

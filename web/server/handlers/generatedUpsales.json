@@ -1,0 +1,16 @@
+[
+  {
+    "title": "Gift Packaging",
+    "desc": "We'll wrap your product so you don't have to",
+    "price": "9.99",
+    "compare_at_price": null,
+    "img": "product-1_mlf08d"
+  },
+  {
+    "title": "Handwritten note",
+    "desc": "A customized and handwritten \"thank you\" note will be attached to the product",
+    "price": "4.99",
+    "compare_at_price": null,
+    "img": "product-2_lxhqpe"
+  }
+]
