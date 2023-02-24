@@ -137,7 +137,7 @@ const list = async (req, res) => {
             },
         });
 
-        if (!analytics) return (ctx.body = []);
+        if (!analytics) return res.json([]);
 
         const modalViews = await models.ModalView.findAll({
             where: {
@@ -146,7 +146,7 @@ const list = async (req, res) => {
             },
         });
 
-        ctx.body = { analytics, modalViews };
+        res.json({ analytics, modalViews });
     } catch (err) {
         console.log("list analytics", err);
         if (err.name === "CastError" || err.name === "NotFoundError") {

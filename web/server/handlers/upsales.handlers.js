@@ -53,11 +53,11 @@ const getPriceRuleData = ({
           }),
 });
 
-const updateAllCollectionIdIfNecesary = async (payload, shopDB, ctx) => {
+const updateAllCollectionIdIfNecesary = async (payload, shopDB, res) => {
     // If user didn't select a specific target for this upsale, we have to display it on all products
     // If there is not "allProductsCollection" already, we will create one that will have all products inside
     if (payload.targets.includes("all") && !shopDB.allProductsCollectionId) {
-        const allProductsCollection = await ctx.shopify.smartCollection.create({
+        const allProductsCollection = await res.shopify.smartCollection.create({
             title: "All Products",
             sort_order: "best-selling",
             disjunctive: false,
@@ -76,7 +76,7 @@ const updateAllCollectionIdIfNecesary = async (payload, shopDB, ctx) => {
     }
 };
 
-const createPriceRuleAndDiscount = async (payload, shopDB, ctx) => {
+const createPriceRuleAndDiscount = async (payload, shopDB, res) => {
     const discountId = `ISLAND-${randomString(10).toUpperCase()}`;
     const priceRuleData = getPriceRuleData({
         discountId,
@@ -86,9 +86,9 @@ const createPriceRuleAndDiscount = async (payload, shopDB, ctx) => {
         allProductsCollectionId: shopDB.allProductsCollectionId,
     });
 
-    const priceRule = await ctx.shopify.priceRule.create(priceRuleData);
+    const priceRule = await res.shopify.priceRule.create(priceRuleData);
 
-    const discountCode = await ctx.shopify.discountCode.create(priceRule.id, {
+    const discountCode = await res.shopify.discountCode.create(priceRule.id, {
         code: discountId,
     });
     return { priceRule, discountCode };
@@ -97,11 +97,11 @@ const createPriceRuleAndDiscount = async (payload, shopDB, ctx) => {
 const create = async (req, res) => {
     try {
         const { shop, accessToken } = res.locals.shopify.session;
-        const payload = ctx.request.body;
+        const payload = req.body;
 
         const shopDB = await models.Shop.findOne({ where: { domain: shop } });
 
-        if (!shopDB) ctx.throw(404);
+        if (!shopDB) res.sendStatus(404);
 
         // We need to get the others upsales positions so we add the new one to the end of the list
         const findHigherPosition = await models.Upsale.findAll({
@@ -119,10 +119,10 @@ const create = async (req, res) => {
 
         if (!!payload.discount && payload.discount !== "0") {
             // Create a collection listing all store's products if there isn't one yet
-            await updateAllCollectionIdIfNecesary(payload, shopDB, ctx);
+            await updateAllCollectionIdIfNecesary(payload, shopDB, res);
 
             const { priceRule, discountCode } =
-                await createPriceRuleAndDiscount(payload, shopDB, ctx);
+                await createPriceRuleAndDiscount(payload, shopDB, res);
 
             newUpsale = await models.Upsale.create({
                 ...payload,
@@ -150,10 +150,10 @@ const create = async (req, res) => {
             }`
         );
 
-        ctx.body = newUpsale;
+        res.json(newUpsale);
     } catch (err) {
         console.log("create upsale", err, JSON.stringify(err));
-        ctx.throw(422);
+        res.sendStatus(422);
     }
 };
 
@@ -177,7 +177,7 @@ const update = async (req, res) => {
             if (upsale.priceRuleId) {
                 if (upsale.discountId) {
                     try {
-                        await ctx.shopify.discountCode.delete(
+                        await res.shopify.discountCode.delete(
                             upsale.priceRuleId,
                             upsale.discountId
                         );
@@ -186,7 +186,7 @@ const update = async (req, res) => {
                     }
                 }
                 try {
-                    await ctx.shopify.priceRule.delete(upsale.priceRuleId);
+                    await res.shopify.priceRule.delete(upsale.priceRuleId);
                 } catch (err) {
                     console.log("del priceRule err", err);
                 }
@@ -199,7 +199,7 @@ const update = async (req, res) => {
                 targets: JSON.stringify(payload.targets),
             });
         } else if (payload.discount !== upsale.discount) {
-            await updateAllCollectionIdIfNecesary(payload, shopDB, ctx);
+            await updateAllCollectionIdIfNecesary(payload, shopDB, res);
 
             let priceRule = null;
             let discountCode = {
@@ -210,7 +210,7 @@ const update = async (req, res) => {
                 const res = await createPriceRuleAndDiscount(
                     payload,
                     shopDB,
-                    ctx
+                    res
                 );
 
                 priceRule = res.priceRule;
@@ -224,7 +224,7 @@ const update = async (req, res) => {
                 };
                 const priceRuleData = getPriceRuleData(priceRuleParams);
 
-                priceRule = await ctx.shopify.priceRule.update(
+                priceRule = await res.shopify.priceRule.update(
                     upsale.priceRuleId,
                     priceRuleData
                 );
@@ -328,7 +328,7 @@ const get = async (req, res) => {
 
         if (targets.length && !targets.includes("all")) {
             if (targets[0].id.includes("Product/")) {
-                const response = await ctx.shopify.graphql(
+                const response = await res.shopify.graphql(
                     listProducts(targets.map((t) => t.id))
                 );
                 targets = response.nodes
@@ -344,14 +344,14 @@ const get = async (req, res) => {
                         ).selectedVariants,
                     }));
             } else {
-                const response = await ctx.shopify.graphql(
+                const response = await res.shopify.graphql(
                     listCollections(targets.map((t) => t.id))
                 );
                 targets = response.nodes.filter((t) => !!t);
             }
         }
 
-        let mainProductResponse = await ctx.shopify.graphql(
+        let mainProductResponse = await res.shopify.graphql(
             listProducts([upsale.gId])
         );
 
@@ -399,9 +399,9 @@ const list = async (req, res) => {
             raw: true,
         });
 
-        if (!upsales || !upsales.length) return (ctx.body = []);
+        if (!upsales || !upsales.length) return res.json([]);
 
-        let productsWithVariants = await ctx.shopify.graphql(
+        let productsWithVariants = await res.shopify.graphql(
             getProductsVariants(upsales.map((u) => u.gId))
         );
 
@@ -438,7 +438,7 @@ const list = async (req, res) => {
 
                         try {
                             const collectionsResponse =
-                                await ctx.shopify.graphql(collectionCountQuery);
+                                await res.shopify.graphql(collectionCountQuery);
 
                             t.products = 0;
                             if (
@@ -531,7 +531,7 @@ const deleteMethod = async (req, res) => {
         if (upsale.priceRuleId) {
             if (upsale.discountId) {
                 try {
-                    await ctx.shopify.discountCode.delete(
+                    await res.shopify.discountCode.delete(
                         upsale.priceRuleId,
                         upsale.discountId
                     );
@@ -540,7 +540,7 @@ const deleteMethod = async (req, res) => {
                 }
             }
             try {
-                await ctx.shopify.priceRule.delete(upsale.priceRuleId);
+                await res.shopify.priceRule.delete(upsale.priceRuleId);
             } catch (err) {
                 console.log("del priceRule err", err);
             }

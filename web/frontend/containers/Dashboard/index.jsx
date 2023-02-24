@@ -45,9 +45,9 @@ const Index = ({ t }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const shop = (
-                    await fetch(`/api/shop`, {}).then((res) => res.json())
-                ).data;
+                const shop = await fetch(`/api/shop`, {}).then((res) =>
+                    res.json()
+                );
                 if (shop) {
                     const parsedSettings = shop.settings
                         ? JSON.parse(shop.settings)
@@ -56,20 +56,18 @@ const Index = ({ t }) => {
                     setShop({ ...shop, settings: parsedSettings });
                 }
 
-                const upsales = (
-                    await fetch(`/api/upsales`).then((res) => res.json())
-                ).data;
+                const upsales = await fetch(`/api/upsales`).then((res) =>
+                    res.json()
+                );
 
                 if (upsales) {
                     setUpsales(upsales);
                 }
 
                 // analytics
-                const food = (
-                    await fetch(`/api/shop/${shop.id}/food`).then(
-                        (res) => res.json
-                    )
-                ).data;
+                const food = await fetch(`/api/shop/${shop.id}/food`).then(
+                    (res) => res.json()
+                );
 
                 if (food) setAnalytics(food);
                 setLoading(false);
@@ -87,7 +85,7 @@ const Index = ({ t }) => {
 
     if (upsales) filteredUpsales = upsales.filter((u) => u.isActive);
 
-    const goNewUpsell = () =>
+    const goNewUpsell = () => {
         navigate({
             pathname: `/upsale`,
             search: createSearchParams({
@@ -95,6 +93,7 @@ const Index = ({ t }) => {
                 shop: window.shopOrigin,
             }).toString(),
         });
+    };
 
     const dismissSetup = async (save = false) => {
         try {
@@ -112,7 +111,13 @@ const Index = ({ t }) => {
     const toggleApp = async () => {
         try {
             setShop({ ...shop, isAppEnabled: !shop.isAppEnabled });
-            await axios.patch(`${HOST}/api/shop/toggleApp`);
+            await fetch(`/api/shop/toggleApp`, {
+                body: JSON.stringify({}),
+                method: "post",
+                headers: {
+                    "Content-type": "application/json",
+                },
+            });
 
             addToast(
                 `App ${
@@ -269,7 +274,7 @@ const Index = ({ t }) => {
                     }}
                     image={img}
                 >
-                    <p>{t("create-upsale")}.</p>
+                    <p>{t("create-upsale")}11.</p>
                 </EmptyState>
             )}
         </Page>

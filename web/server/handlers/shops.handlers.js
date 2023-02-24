@@ -469,4 +469,5 @@ export default {
     toggleApp,
     get,
     create,
+    updateSettings,
 };

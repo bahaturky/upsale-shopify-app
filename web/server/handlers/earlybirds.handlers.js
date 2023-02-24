@@ -6,7 +6,7 @@ import fs from "fs";
 const add = (req, res) => {
     const { domain, days } = req.body;
     const regex = RegExp(/^[a-z0-9-_]+$/i);
-    if (!domain || !regex.test(domain.split(".my")[0])) ctx.throw(404);
+    if (!domain || !regex.test(domain.split(".my")[0])) res.sendStatus(404);
 
     const file = `early-${days === 100 ? 100 : 50}.json`;
     const earlyBirds = JSON.parse(fs.readFileSync(file)) || [];

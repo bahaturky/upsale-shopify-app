@@ -1,0 +1,14 @@
+// "use strict";
+
+// if (process.env.NODE_ENV === "production") {
+//     module.exports = require("./formik-polaris.cjs.production.min.js");
+// } else {
+//     module.exports = require("./formik-polaris.cjs.development.js");
+// }
+
+export * from "./formik-polaris.esm.js";
+// import { TextField } from "./formik-polaris.esm";
+
+// export default {
+//     TextField,
+// };

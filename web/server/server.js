@@ -1,10 +1,15 @@
-import { join } from "path";
+import { join, dirname } from "path";
 import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
 import express from "express";
 import serveStatic from "serve-static";
 import request from "request";
 import { LATEST_API_VERSION } from "@shopify/shopify-api";
 import Shopify from "shopify-api-node";
+
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
 // console.log(process.env);
 import shopify, { initializeShop } from "../shopify.js";
 import productCreator from "../product-creator.js";
@@ -17,9 +22,12 @@ import EarlyHandler from "./handlers/earlybirds.handlers.js";
 // import WebhooksHandler from "./handlers/webhooks.js";
 import models from "../models/index.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // @ts-ignore
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
-
+console.log(PORT);
 const HOST = process.env.HOST;
 
 const STATIC_PATH =
@@ -43,7 +51,7 @@ app.get(
             apiVersion: LATEST_API_VERSION,
         });
 
-        res.locals.shopifyNode = shopifyNode;
+        // res.shopify = shopifyNode;
 
         const shopData = await shopifyNode.shop.get();
         console.log(req.headers["x-forwarded-for"]);
@@ -305,15 +313,79 @@ app.get("/scripts/island.js", async (req, res) => {
     res.send(script);
 });
 
-app.get("/widget/build/(.*)", async (req, res) => {
-    console.log(req.path);
-    res.send("asdf");
+app.use("/widget/build/static/js/:filename", async (req, res) => {
+    const options = {
+        root: join(__dirname, "../widget/build/static/js/"),
+    };
+    res.sendFile(req.params.filename, options);
 });
 
 // All endpoints after this point will require an active session
-app.use("/api/*", shopify.validateAuthenticatedSession());
+app.use(
+    "/api/*",
+    shopify.validateAuthenticatedSession(),
+    async (req, res, next) => {
+        const { shop, accessToken } = res.locals.shopify.session;
+
+        const shopifyNode = new Shopify({
+            shopName: shop.split(".myshopify")[0],
+            accessToken,
+            apiVersion: LATEST_API_VERSION,
+        });
+
+        res.shopify = shopifyNode;
+        next();
+    }
+);
 
 app.use(express.json());
+
+app.post("/api/food", AnalyticsHandler.track);
+
+// Early birds when they install the app from the early offer pages
+app.post("/api/early", EarlyHandler.add);
+
+app.get("/api/shop", ShopHandler.get);
+app.patch("/api/shop/settings", ShopHandler.updateSettings);
+app.patch("/api/shop/dismissSetup", ShopHandler.dismissSetup);
+app.patch("/api/shop/toggleApp", ShopHandler.toggleApp);
+
+app.get("/api/shop/:id/food", AnalyticsHandler.list);
+
+app.get("/api/upsales", UpsaleHandler.list);
+app.get("/api/upsales/:id", UpsaleHandler.get);
+app.post("/api/upsales", UpsaleHandler.create);
+app.patch("/api/upsales/positions", UpsaleHandler.positions);
+app.patch("/api/upsales/:id", UpsaleHandler.update);
+app.patch("/api/upsales/:id/toggle", UpsaleHandler.toggle);
+app.delete("/api/upsales/:id", UpsaleHandler.delete);
+
+app.put("/api/upsales/:upsaleId/image", async (req, res) => {
+    const { upsaleId } = req.params;
+    const { fileName, contentType } = req.body;
+
+    const bucketParams = {
+        Bucket: process.env.SPACES_BUCKET,
+        Key: `upsales/${upsaleId}/${fileName}`,
+        ContentType: contentType,
+        ACL: "public-read",
+    };
+
+    try {
+        const url = await getSignedUrl(
+            s3Client,
+            new PutObjectCommand(bucketParams),
+            { expiresIn: 15 * 60 }
+        );
+        const imageUrl = `https://${process.env.SPACES_BUCKET}.${process.env.SPACES_REGION}.digitaloceanspaces.com/upsales/${upsaleId}/${fileName}`;
+
+        res.json({ url, imageUrl });
+    } catch (err) {
+        console.log("Error", err);
+
+        res.sendStatus(500);
+    }
+});
 
 app.get("/api/products/count", async (_req, res) => {
     const countData = await shopify.api.rest.Product.count({
