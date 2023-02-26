@@ -86,13 +86,7 @@ const Index = ({ t }) => {
     if (upsales) filteredUpsales = upsales.filter((u) => u.isActive);
 
     const goNewUpsell = () => {
-        navigate({
-            pathname: `/upsale`,
-            search: createSearchParams({
-                id: "new",
-                shop: window.shopOrigin,
-            }).toString(),
-        });
+        navigate(`/upsale/new`);
     };
 
     const dismissSetup = async (save = false) => {
@@ -274,7 +268,7 @@ const Index = ({ t }) => {
                     }}
                     image={img}
                 >
-                    <p>{t("create-upsale")}11.</p>
+                    <p>{t("create-upsale")}</p>
                 </EmptyState>
             )}
         </Page>

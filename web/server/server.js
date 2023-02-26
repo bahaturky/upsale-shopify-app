@@ -2,6 +2,7 @@ import { join, dirname } from "path";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import express from "express";
+
 import serveStatic from "serve-static";
 import request from "request";
 import { LATEST_API_VERSION } from "@shopify/shopify-api";
@@ -10,7 +11,6 @@ import Shopify from "shopify-api-node";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// console.log(process.env);
 import shopify, { initializeShop } from "../shopify.js";
 import productCreator from "../product-creator.js";
 import GDPRWebhookHandlers from "../gdpr.js";
@@ -27,7 +27,7 @@ const __dirname = dirname(__filename);
 
 // @ts-ignore
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
-console.log(PORT);
+console.log(PORT, "PORT");
 const HOST = process.env.HOST;
 
 const STATIC_PATH =
@@ -36,6 +36,12 @@ const STATIC_PATH =
         : `${process.cwd()}/frontend/`;
 
 const app = express();
+
+app.use("/*", (req, res, next) => {
+    console.log(req.url, "test");
+    // res.send('ok');
+    next();
+});
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
@@ -313,12 +319,33 @@ app.get("/scripts/island.js", async (req, res) => {
     res.send(script);
 });
 
+app.get("/img/*", (req, res) => {
+    res.sendFile(join(__dirname, "../frontend/", req.url));
+});
+
+app.get("/locales/*", (req, res) => {
+    res.sendFile(join(__dirname, "../frontend/", req.url));
+});
+
+app.get("/widget/build/:filename", async (req, res) => {
+    console.log(req.params);
+    const options = {
+        root: join(__dirname, "../widget/build/"),
+    };
+    res.sendFile(req.params.filename, options);
+});
+
 app.use("/widget/build/static/js/:filename", async (req, res) => {
     const options = {
         root: join(__dirname, "../widget/build/static/js/"),
     };
     res.sendFile(req.params.filename, options);
 });
+
+// app.use('/img/*', async(req, res) => {
+//     // console.log(req.)
+//     res.sendFile(join(__dirname, ''))
+// })
 
 // All endpoints after this point will require an active session
 app.use(
@@ -410,11 +437,19 @@ app.get("/api/products/create", async (_req, res) => {
 
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
-app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
-    return res
-        .status(200)
-        .set("Content-Type", "text/html")
-        .send(readFileSync(join(STATIC_PATH, "index.html")));
-});
+app.use(
+    "/*",
+    (req, res, next) => {
+        console.log(req.baseUrl);
+        next();
+    },
+    shopify.ensureInstalledOnShop(),
+    async (_req, res, _next) => {
+        return res
+            .status(200)
+            .set("Content-Type", "text/html")
+            .send(readFileSync(join(STATIC_PATH, "index.html")));
+    }
+);
 
 app.listen(PORT);

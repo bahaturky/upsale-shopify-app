@@ -1,14 +1,32 @@
 import { TitleBar, useNavigate } from "@shopify/app-bridge-react";
 
 import { withTranslation } from "react-i18next";
+import { createSearchParams } from "react-router-dom";
 // import {  } from "react-router-dom";
 
 const TitleBarC = ({ breadcrumbs, title, t }) => {
     const navigate = useNavigate();
     const secondaryActions = [
-        { content: t("dashboard"), url: "/home" },
-        { content: t("faq"), url: "/questions" },
-        { content: t("settings"), url: "/settings" },
+        {
+            content: t("dashboard"),
+            onAction: () => {
+                navigate("/home");
+            },
+        },
+        {
+            content: t("faq"),
+            url: "/questions",
+            onAction: () => {
+                navigate("/questions");
+            },
+        },
+        {
+            content: t("settings"),
+            onAction: () => {
+                navigate("/settings");
+            },
+            url: "/settings",
+        },
         {
             content: t("support"),
             onAction: () => {
@@ -27,17 +45,7 @@ const TitleBarC = ({ breadcrumbs, title, t }) => {
                 title={title}
                 primaryAction={{
                     content: t("new-upsell"),
-                    onAction: () =>
-                        router.push(
-                            {
-                                pathname: "/upsale",
-                                query: {
-                                    id: "new",
-                                    shop: window.shopOrigin,
-                                },
-                            },
-                            "/upsale/new"
-                        ),
+                    onAction: () => navigate("/upsale/new"),
                 }}
                 secondaryActions={secondaryActions}
                 breadcrumbs={breadcrumbs || null}

@@ -84,13 +84,11 @@ const Performance = ({ food, shop, t, toggleApp }) => {
         try {
             setSelectedTab(index);
             setLoading(true);
-            const res = (
-                await fetch(
-                    `${HOST}/api/shop/${shop.id}/food${
-                        index !== 0 ? `?days=${tabs(t)[index].days}` : ""
-                    }`
-                )
-            ).data;
+            const res = await fetch(
+                `/api/shop/${shop.id}/food${
+                    index !== 0 ? `?days=${tabs(t)[index].days}` : ""
+                }`
+            );
 
             if (res) setData(formatData(res));
             else setData([0, 0, 0, 0, 0]);

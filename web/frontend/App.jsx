@@ -36,8 +36,20 @@ export default function App() {
                             <NavigationMenu
                                 navigationLinks={[
                                     {
-                                        label: "Page name",
-                                        destination: "/pagename",
+                                        label: "Dashboard",
+                                        destination: "/",
+                                    },
+                                    {
+                                        label: "New Upsell",
+                                        destination: "/upsell/new",
+                                    },
+                                    {
+                                        label: "Settings",
+                                        destination: "/settings",
+                                    },
+                                    {
+                                        label: "FAQ",
+                                        destination: "/questions",
                                     },
                                 ]}
                             />

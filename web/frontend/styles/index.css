@@ -8,42 +8,42 @@
 /* purgecss start ignore */
 
 .Polaris-FormLayout__Item {
-    min-width: 22rem;
+  min-width: 22rem;
 }
 
 .Polaris-TextField--hasValue {
-    color: #333c44;
+  color: #333c44;
 }
 
 .static-text ul {
-    padding-bottom: 1rem;
+  padding-bottom: 1rem;
 }
 
 .static-text ul li {
-    padding-bottom: 1rem;
+  padding-bottom: 1rem;
 }
 
 .static-text ul li:last-child {
-    padding-bottom: 0;
+  padding-bottom: 0;
 }
 
 .static-text img {
-    margin-top: 1.5rem;
-    border: 1px solid #eee;
-    padding: 0.5rem;
+  margin-top: 1.5rem;
+  border: 1px solid #eee;
+  padding: 0.5rem;
 }
 
 .static-text a {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .Polaris-Labelled__HelpText a {
-    text-decoration: underline;
-    text-underline-offset: 2px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .Polaris-Labelled__HelpText a:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 /* purgecss end ignore */

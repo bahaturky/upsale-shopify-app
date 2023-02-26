@@ -45,7 +45,7 @@ const Index = ({ t }) => {
                 }
 
                 const upsales = await fetch(`/api/upsales`).then(
-                    (res) => res.json
+                    (res) => res.json()
                 );
 
                 if (upsales) {

@@ -1,6 +1,6 @@
 import { SkeletonDisplayText } from "@shopify/polaris";
 
-import MoneyFormat from "../widget/src/components/MoneyFormat";
+import MoneyFormat from "../../widget/src/components/MoneyFormat";
 
 const Metric = ({
     title,
@@ -111,7 +111,7 @@ const SalesSummaryCards = ({
                 </Metric>
             );
         })}
-        <style jsx>{`
+        <style jsx="true">{`
             div :global(.flex-grow-well) {
                 flex: 1 1 16rem;
             }

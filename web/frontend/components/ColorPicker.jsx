@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as P from "@shopify/polaris";
 import tinycolor from "tinycolor2";
 import { useField } from "formik";
-import { DEFAULT_SETTINGS } from "../widget/src/constants";
+import { DEFAULT_SETTINGS } from "../../widget/src/constants";
 
 const ColorPicker = ({ name, label, restoreDefaultText }) => {
     const [isOpen, setPopup] = useState(false);

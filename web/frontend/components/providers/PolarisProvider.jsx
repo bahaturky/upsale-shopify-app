@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { AppProvider } from "@shopify/polaris";
 import { useNavigate } from "@shopify/app-bridge-react";
 import translations from "@shopify/polaris/locales/en.json";
-import "@shopify/polaris/build/esm/styles.css";
+import "@shopify/polaris/styles.min.css";
 
 function AppBridgeLink({ url, children, external, ...rest }) {
     const navigate = useNavigate();

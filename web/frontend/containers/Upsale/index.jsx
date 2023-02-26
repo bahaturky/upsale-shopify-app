@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import * as P from "@shopify/polaris";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 // import axios from "../../axios";
 // import Error from "next/error";
-
+import Error from "../../components/Error";
 import Form from "./Form";
 import useToastContext from "../../hooks/useToastContext";
 
@@ -16,8 +16,10 @@ const isUUID = (id) =>
     );
 
 const Upsale = ({ query, t }) => {
-    if (!query) return <Error title={t("upsale-404")} statusCode={404} />;
-    const { id } = query;
+    const params = useParams();
+    // console.log(params);
+    if (!params) return <Error title={t("upsale-404")} statusCode={404} />;
+    const { id } = params;
 
     const fetch = useAuthenticatedFetch();
     const isNew = !id || id === "new" || !isUUID(id);
@@ -32,7 +34,6 @@ const Upsale = ({ query, t }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // const shop = (await axios(`${HOST}/api/shop`)).data;
                 const shop = await fetch("/api/shop", {
                     headers: {
                         "Content-type": "application/json",
@@ -98,7 +99,7 @@ const Upsale = ({ query, t }) => {
                     },
                 }).then((res) => res.json());
             } else {
-                await fetch(`${HOST}/api/upsales`, {
+                await fetch(`/api/upsales`, {
                     body: JSON.stringify({
                         ...payload,
                         gId: product.id,
