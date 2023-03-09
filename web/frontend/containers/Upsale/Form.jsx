@@ -188,7 +188,7 @@ const FormComponent = ({
 
                         await fetch(`/api/upsales/${product.id}/toggle`, {
                             body: JSON.stringify({}),
-                            method: "patch",
+                            method: "post",
                             headers: {
                                 "Content-type": "application/json",
                             },

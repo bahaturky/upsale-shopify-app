@@ -94,7 +94,15 @@ const Index = ({ t }) => {
             setShop({ ...shop, setupDismissed: true });
 
             if (save) {
-                await axios.patch(`${HOST}/api/shop/dismissSetup`);
+                // await axios.patch(`${HOST}/api/shop/dismissSetup`);
+                // await axios.patch(`${HOST}/api/shop/dismissSetup`);
+                await fetch(`/api/shop/dismissSetup`, {
+                    body: JSON.stringify({}),
+                    method: "post",
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                });
                 console.log("setup dismissed");
             }
         } catch (err) {

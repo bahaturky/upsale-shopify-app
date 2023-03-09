@@ -93,7 +93,7 @@ const Upsale = ({ query, t }) => {
                             ? product.id
                             : product.gId,
                     }),
-                    method: "patch",
+                    method: "post",
                     headers: {
                         "Content-type": "application/json",
                     },

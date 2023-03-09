@@ -11,7 +11,7 @@ import Shopify from "shopify-api-node";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import shopify, { initializeShop } from "../shopify.js";
+import shopify, { checkSubscription, initializeShop } from "../shopify.js";
 import productCreator from "../product-creator.js";
 import GDPRWebhookHandlers from "../gdpr.js";
 
@@ -21,6 +21,8 @@ import AnalyticsHandler from "./handlers/analytics.handlers.js";
 import EarlyHandler from "./handlers/earlybirds.handlers.js";
 // import WebhooksHandler from "./handlers/webhooks.js";
 import models from "../models/index.js";
+
+import s3Client from "./helpers/s3Client.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,11 +39,11 @@ const STATIC_PATH =
 
 const app = express();
 
-app.use("/*", (req, res, next) => {
-    console.log(req.url, "test");
-    // res.send('ok');
-    next();
-});
+// app.use("/*", async (req, res, next) => {
+//     console.log(req.url, "test");
+//     // res.send('ok');
+
+// });
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
@@ -373,18 +375,18 @@ app.post("/api/food", AnalyticsHandler.track);
 app.post("/api/early", EarlyHandler.add);
 
 app.get("/api/shop", ShopHandler.get);
-app.patch("/api/shop/settings", ShopHandler.updateSettings);
-app.patch("/api/shop/dismissSetup", ShopHandler.dismissSetup);
-app.patch("/api/shop/toggleApp", ShopHandler.toggleApp);
+app.post("/api/shop/settings", ShopHandler.updateSettings);
+app.post("/api/shop/dismissSetup", ShopHandler.dismissSetup);
+app.post("/api/shop/toggleApp", ShopHandler.toggleApp);
 
 app.get("/api/shop/:id/food", AnalyticsHandler.list);
 
 app.get("/api/upsales", UpsaleHandler.list);
 app.get("/api/upsales/:id", UpsaleHandler.get);
 app.post("/api/upsales", UpsaleHandler.create);
-app.patch("/api/upsales/positions", UpsaleHandler.positions);
-app.patch("/api/upsales/:id", UpsaleHandler.update);
-app.patch("/api/upsales/:id/toggle", UpsaleHandler.toggle);
+app.post("/api/upsales/positions", UpsaleHandler.positions);
+app.post("/api/upsales/:id", UpsaleHandler.update);
+app.post("/api/upsales/:id/toggle", UpsaleHandler.toggle);
 app.delete("/api/upsales/:id", UpsaleHandler.delete);
 
 app.put("/api/upsales/:upsaleId/image", async (req, res) => {
@@ -444,6 +446,14 @@ app.use(
         next();
     },
     shopify.ensureInstalledOnShop(),
+    async (req, res, next) => {
+        if (req.query.shop) {
+            // console.log('check subscription part')
+            await checkSubscription(req, res, next)
+        } else {
+            next()
+        }
+    },
     async (_req, res, _next) => {
         return res
             .status(200)

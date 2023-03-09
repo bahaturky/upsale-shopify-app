@@ -67,7 +67,7 @@ const Index = ({ t }) => {
 
             await fetch(`/api/shop/settings`, {
                 body: JSON.stringify(values),
-                method: "patch",
+                method: "post",
                 headers: {
                     "Content-type": "application/json",
                 },

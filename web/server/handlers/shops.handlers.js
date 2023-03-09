@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { access } from "fs";
 import Shopify from "shopify-api-node";
 // import schedule from "node-schedule";
 
@@ -199,7 +199,7 @@ const get = async (req, res) => {
 const toggleApp = async (req, res) => {
     try {
         const { shop, accessToken } = res.locals.shopify.session;
-
+        console.log(shop, accessToken)
         const shopDB = await models.Shop.findOne({
             where: { domain: shop },
         });

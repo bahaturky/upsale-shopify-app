@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { dirname } from "path";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import https from "https";
 import react from "@vitejs/plugin-react";
@@ -41,14 +41,14 @@ if (host === "localhost") {
         clientPort: 443,
     };
 }
+console.log(dirname(fileURLToPath(import.meta.url)))
+// console.log(join(dirname(fileURLToPath(import.meta.url)), "../widget"))
 
 export default defineConfig({
     root: dirname(fileURLToPath(import.meta.url)),
     plugins: [react()],
     define: {
-        "process.env.SHOPIFY_API_KEY": JSON.stringify(
-            process.env.SHOPIFY_API_KEY
-        ),
+        "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
         IS_OFFLINE: process.env.IS_OFFLINE,
     },
     resolve: {
@@ -62,6 +62,9 @@ export default defineConfig({
         proxy: {
             "^/(\\?.*)?$": proxyOptions,
             "^/api(/|(\\?.*)?$)": proxyOptions,
+        },
+        fs: {
+            // allow: [join(dirname(fileURLToPath(import.meta.url)), "../widget")],
         },
     },
 });
