@@ -229,16 +229,18 @@ const isVariantAvailable = (variant) =>
 // Public data: store setting & upsales
 // To be sent to their stores to customize the upsell popup
 const getPublicData = async (req, res) => {
-    const { shop, accessToken } = res.locals.shopify.session;
+    // const { shop, accessToken } = res.locals.shopify.session;
+    const shop = req.query.shop;
+    // console.log(shop.shop)
+    const shopDB = await models.Shop.findOne({
+        where: { domain: shop },
+        raw: true,
+    });
+    
+    if (!shopDB) res.sendStatus(404);
+    if (!shopDB.isAppEnabled) return null;
+    
     try {
-        const shopDB = await models.Shop.findOne({
-            where: { domain: shop },
-            raw: true,
-        });
-
-        if (!shopDB) res.sendStatus(404);
-        if (!shopDB.isAppEnabled) return null;
-
         const upsales = await models.Upsale.findAll({
             where: {
                 shopId: shopDB.id,
@@ -249,7 +251,7 @@ const getPublicData = async (req, res) => {
         });
 
         if (!upsales || !upsales.length) {
-            return res.json({
+            return {
                 shop: {
                     domain: shopDB.domain,
                     id: shopDB.id,
@@ -259,7 +261,7 @@ const getPublicData = async (req, res) => {
                 },
                 settings: shopDB.settings,
                 upsales: [],
-            });
+            };
         }
 
         const shopify = new Shopify({
@@ -277,17 +279,17 @@ const getPublicData = async (req, res) => {
                 ...p,
                 variants: p
                     ? p.variants.edges.reduce(
-                          (acc, v) =>
-                              isVariantAvailable(v.node)
-                                  ? [...acc, v.node]
-                                  : acc,
-                          []
-                      )
+                        (acc, v) =>
+                            isVariantAvailable(v.node)
+                                ? [...acc, v.node]
+                                : acc,
+                        []
+                    )
                     : [],
             }));
         }
 
-        res.json({
+        return {
             shop: {
                 domain: shopDB.domain,
                 id: shopDB.id,
@@ -422,23 +424,25 @@ const getPublicData = async (req, res) => {
                             targets,
                             variants:
                                 u.selectedVariants &&
-                                u.selectedVariants.length &&
-                                !u.selectedVariants.includes("all")
+                                    u.selectedVariants.length &&
+                                    !u.selectedVariants.includes("all")
                                     ? upsaleVariants.filter((uv) =>
-                                          u.selectedVariants.includes(uv.id)
-                                      )
+                                        u.selectedVariants.includes(uv.id)
+                                    )
                                     : upsaleVariants,
                         };
                     })
                 )
             ).filter((u) => !!u.variants.length),
-        });
+        };
     } catch (err) {
-        console.log(
-            "getPublicData err",
-            err && err.message ? err.message : err
-        );
-        res.sendStatus(500);
+        // console.log(
+        //     "getPublicData err",
+        //     err && err.message ? err.message : err
+        // );
+        console.log(err)
+        // res.sendStatus(500);
+        throw new Error('Get Public data error')
     }
 };
 

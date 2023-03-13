@@ -325,6 +325,10 @@ app.get("/img/*", (req, res) => {
     res.sendFile(join(__dirname, "../frontend/", req.url));
 });
 
+app.get('/cart.js', (req, res) => {
+    res.sendFile(join(__dirname, './cart.js'))
+})
+
 app.get("/locales/*", (req, res) => {
     res.sendFile(join(__dirname, "../frontend/", req.url));
 });
