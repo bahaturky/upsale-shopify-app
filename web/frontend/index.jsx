@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom";
 
 import App from "./App";
-import "./i18n";
+
 
 /*! purgecss start ignore */
 // import "./node_modules/@shopify/polaris/build/esm/styles.css";

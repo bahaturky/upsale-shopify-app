@@ -43,4 +43,4 @@ const FAQ = ({ t }) => {
     );
 };
 
-export default withTranslation("faq")(FAQ);
+export default withTranslation(["faq", "common"])(FAQ);

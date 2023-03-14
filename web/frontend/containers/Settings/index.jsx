@@ -14,6 +14,7 @@ import SelectDesign from "./SelectDesign";
 import SelectShape from "./SelectShape";
 import SelectShadow from "./SelectShadow";
 import LimitQuantity from "./LimitQuantity";
+// import '../../i18n'
 
 import { DEFAULT_SETTINGS } from "../../../widget/src/constants";
 import useToastContext from "../../hooks/useToastContext";
@@ -779,4 +780,4 @@ const Index = ({ t }) => {
     );
 };
 
-export default withTranslation("settings")(Index);
+export default withTranslation(["settings", 'common'])(Index);
