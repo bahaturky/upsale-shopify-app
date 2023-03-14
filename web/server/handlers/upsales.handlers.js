@@ -77,21 +77,29 @@ const updateAllCollectionIdIfNecesary = async (payload, shopDB, res) => {
 };
 
 const createPriceRuleAndDiscount = async (payload, shopDB, res) => {
-    const discountId = `ISLAND-${randomString(10).toUpperCase()}`;
-    const priceRuleData = getPriceRuleData({
-        discountId,
-        discount: payload.discount,
-        productId: payload.gId.split("Product/")[1],
-        targets: payload.targets,
-        allProductsCollectionId: shopDB.allProductsCollectionId,
-    });
-
-    const priceRule = await res.shopify.priceRule.create(priceRuleData);
-
-    const discountCode = await res.shopify.discountCode.create(priceRule.id, {
-        code: discountId,
-    });
-    return { priceRule, discountCode };
+    try {
+        const discountId = `ISLAND-${randomString(10).toUpperCase()}`;
+        const priceRuleData = getPriceRuleData({
+            discountId,
+            discount: payload.discount,
+            productId: payload.gId.split("Product/")[1],
+            targets: payload.targets,
+            allProductsCollectionId: shopDB.allProductsCollectionId,
+        });
+        
+        console.log(priceRuleData)
+        const priceRule = await res.shopify.priceRule.create(priceRuleData);
+        const discountCode = await res.shopify.discountCode.create(
+            priceRule.id,
+            {
+                code: discountId,
+            }
+        );
+        return { priceRule, discountCode };
+    } catch (error) {
+        console.log(error);
+        throw new Error("createPriceRuleAndDiscount");
+    }
 };
 
 const create = async (req, res) => {
@@ -171,9 +179,10 @@ const update = async (req, res) => {
         });
 
         if (!upsale) res.sendStatus(404);
-
+        // console.log(upsale)
         // if they set the discount to 0 and there was a discount before, we have to delete it with its priceRule
         if (payload.discount === "0" && upsale.priceRuleId) {
+            console.log("1");
             if (upsale.priceRuleId) {
                 if (upsale.discountId) {
                     try {
@@ -198,7 +207,8 @@ const update = async (req, res) => {
                 discountCode: null,
                 targets: JSON.stringify(payload.targets),
             });
-        } else if (payload.discount !== upsale.discount) {
+            console.log("1");
+        } else if (Number(payload.discount) !== Number(upsale.discount)) {
             await updateAllCollectionIdIfNecesary(payload, shopDB, res);
 
             let priceRule = null;
@@ -207,15 +217,16 @@ const update = async (req, res) => {
                 code: upsale.discountCode,
             };
             if (!upsale.priceRuleId) {
-                const res = await createPriceRuleAndDiscount(
+                const response = await createPriceRuleAndDiscount(
                     payload,
                     shopDB,
                     res
                 );
-
-                priceRule = res.priceRule;
-                discountCode = res.discountCode;
+                console.log("s");
+                priceRule = response.priceRule;
+                discountCode = response.discountCode;
             } else {
+                console.log("s");
                 const priceRuleParams = {
                     discount: payload.discount,
                     productId: upsale.gId.split("Product/")[1],
@@ -238,6 +249,7 @@ const update = async (req, res) => {
                 discountCode: discountCode.code,
             });
         } else {
+            console.log("3");
             await upsale.update({
                 ...payload,
                 targets: JSON.stringify(payload.targets),
@@ -246,6 +258,7 @@ const update = async (req, res) => {
 
         res.json(upsale);
     } catch (err) {
+        console.log(err);
         console.log("update upsale err", err && err.messages);
         res.sendStatus(422);
     }
