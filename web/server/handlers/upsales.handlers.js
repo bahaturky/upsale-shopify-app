@@ -279,14 +279,14 @@ const toggle = async (req, res) => {
 // This is for when they reorder them from their dashboard with the drag and drop
 const positions = async (req, res) => {
     try {
-        const { shop, accessToken } = res.locals.shopify.session;
+        const { shop } = res.locals.shopify.session;
         const upsales = req.body;
 
         const shopDB = await models.Shop.findOne({ where: { domain: shop } });
 
         if (!shopDB) res.sendStatus(404);
 
-        const res = await sequelize.query(`
+        const response = await sequelize.query(`
             UPDATE upsales as u
                 SET position = c.position
             FROM (values
@@ -297,7 +297,7 @@ const positions = async (req, res) => {
             WHERE c.id = u.id;
         `);
 
-        res.json(res);
+        res.json(response);
     } catch (err) {
         console.log("positions up err", err);
         res.sendStatus(422);

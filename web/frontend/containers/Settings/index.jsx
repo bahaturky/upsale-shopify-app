@@ -35,24 +35,24 @@ const Index = ({ t }) => {
     useEffect(() => {
         const fetchSettings = async () => {
             // try {
-                const shop = await fetch(`/api/shop`).then((res) => res.json());
-                if (shop) {
-                    const parsedSettings = shop.settings
-                        ? JSON.parse(shop.settings)
-                        : null;
+            const shop = await fetch(`/api/shop`).then((res) => res.json());
+            if (shop) {
+                const parsedSettings = shop.settings
+                    ? JSON.parse(shop.settings)
+                    : null;
 
-                    setShop({ ...shop, settings: parsedSettings });
-                }
+                setShop({ ...shop, settings: parsedSettings });
+            }
 
-                const upsales = await fetch(`/api/upsales`).then(
-                    (res) => res.json()
-                );
+            const upsales = await fetch(`/api/upsales`).then((res) =>
+                res.json()
+            );
 
-                if (upsales) {
-                    setUpsales(upsales);
-                }
+            if (upsales) {
+                setUpsales(upsales);
+            }
 
-                setFetching(false);
+            setFetching(false);
             // } catch (err) {
             //     console.error('useEffect Error', err);
             //     setFetching(false);
@@ -121,6 +121,12 @@ const Index = ({ t }) => {
                 },
             ]}
         >
+            {/* <P.TextField
+                label="Store name"
+                // value={value}
+                // onChange={handleChange}
+                autoComplete="off"
+            /> */}
             {isFetching ? (
                 <P.Spinner
                     accessibilityLabel="Spinner"
@@ -191,7 +197,7 @@ const Index = ({ t }) => {
                             )}
                             <div className="relative">
                                 <Form>
-                                    {/* <div className="w-full md:w-350px">
+                                    <div className="w-full md:w-350px">
                                         <P.Layout>
                                             <P.Layout.Section secondary>
                                                 <div className="hidden md:block">
@@ -608,7 +614,7 @@ const Index = ({ t }) => {
                                                         />
                                                     </P.Card.Section>
                                                 </P.Card>
-                                                <LimitQuantity {...{ t }} />
+                                                {/* <LimitQuantity {...{ t }} /> */}
 
                                                 <P.Card
                                                     title={t("redirect")}
@@ -762,7 +768,7 @@ const Index = ({ t }) => {
                                                 loading: isSubmitting,
                                             }}
                                         />
-                                    </div> */}
+                                    </div>
                                 </Form>
                             </div>
                         </>

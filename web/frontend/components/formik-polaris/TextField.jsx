@@ -1,14 +1,25 @@
 import React, { useEffect } from "react";
-import {
-    TextField as PolarisTextField,
-} from "@shopify/polaris";
+import { TextInputField } from "evergreen-ui";
 import { usePolarisField } from "./usePolarisField";
 
+// function TextField(props) {
+//     console.log(props);
+//     return <>Test</>
+// }
 function TextField(props) {
-    const { name, encode, decode, validate, ...polarisProps } = props;
+    const {
+        name,
+        encode,
+        decode,
+        validate,
+        label,
+        placeholder,
+        helpText,
+        ...polarisProps
+    } = props;
     useEffect(() => {
-        console.log('Text Fields')
-    }, [])
+        console.log("Text Fields");
+    }, []);
     const {
         value: rawValue,
         isSubmitting,
@@ -26,15 +37,19 @@ function TextField(props) {
     }
 
     return (
-        <PolarisTextField
-            id={name}
-            error={error}
+        <TextInputField
+            label={label}
+            placeholder={placeholder}
+            validationMessage={error}
             disabled={isSubmitting}
             {...polarisProps}
             value={value}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            onChange={handleChange}
+            onChange={(event) => {
+                handleChange(event.target.value)
+            }}
+            hint={helpText}
         />
     );
 }
