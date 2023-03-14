@@ -12,7 +12,6 @@
     "node": ">= 12.16"
   },
   "dependencies": {
-    "@satel/formik-polaris": "^1.1.1",
     "@shopify/app-bridge": "^3.1.0",
     "@shopify/app-bridge-react": "^3.1.0",
     "@shopify/app-bridge-utils": "^3.1.0",
@@ -24,7 +23,7 @@
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
     "autoprefixer": "^10.4.13",
-    "formik": "2.1.4",
+    "formik": "^2.2.9",
     "postcss": "^8.4.21",
     "postcss-flexbugs-fixes": "4.2.1",
     "postcss-loader": "3.0.0",

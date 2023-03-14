@@ -1,40 +1,5 @@
-import React from "react";
-import {
-    TextField as PolarisTextField,
-} from "@shopify/polaris";
-import { usePolarisField } from "./usePolarisField";
+import React from 'react'
 
-function TextField(props) {
-    const { name, encode, decode, validate, ...polarisProps } = props;
-
-    const {
-        value: rawValue,
-        isSubmitting,
-        handleFocus,
-        handleBlur,
-        handleChange,
-        error,
-    } = usePolarisField({ name, encode, decode, validate });
-
-    const value = rawValue === undefined ? "" : rawValue;
-    if (typeof value !== "string") {
-        throw new Error(
-            `[TextField] Found value of type "${typeof value}" for field "${name}". Requires string (after decode)`
-        );
-    }
-
-    return (
-        <PolarisTextField
-            id={name}
-            error={error}
-            disabled={isSubmitting}
-            {...polarisProps}
-            value={value}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onChange={handleChange}
-        />
-    );
+export default function TextField() {
+    return <div></div>
 }
-
-export default TextField;

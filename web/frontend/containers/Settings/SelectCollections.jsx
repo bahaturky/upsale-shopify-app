@@ -1,4 +1,3 @@
-import { TextField } from "@satel/formik-polaris";
 import _ from "lodash";
 import { Card, FormLayout, ResourceList, ResourceItem, Button, Avatar, TextStyle } from "@shopify/polaris";
 import { useField } from "formik";
