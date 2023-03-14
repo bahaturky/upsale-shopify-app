@@ -287,4 +287,4 @@ const Index = ({ t }) => {
 //     return { query, t };
 // };
 
-export default withTranslation("dashboard")(Index);
+export default withTranslation(["dashboard", "common"])(Index);

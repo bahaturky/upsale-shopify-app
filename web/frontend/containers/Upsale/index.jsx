@@ -162,4 +162,4 @@ const Upsale = ({ query, t }) => {
 //     return { query, t };
 // };
 
-export default withTranslation("upsale")(Upsale);
+export default withTranslation(["upsale", "common"])(Upsale);
