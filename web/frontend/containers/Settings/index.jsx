@@ -34,7 +34,7 @@ const Index = ({ t }) => {
 
     useEffect(() => {
         const fetchSettings = async () => {
-            try {
+            // try {
                 const shop = await fetch(`/api/shop`).then((res) => res.json());
                 if (shop) {
                     const parsedSettings = shop.settings
@@ -53,10 +53,10 @@ const Index = ({ t }) => {
                 }
 
                 setFetching(false);
-            } catch (err) {
-                console.error('useEffect Error', err);
-                setFetching(false);
-            }
+            // } catch (err) {
+            //     console.error('useEffect Error', err);
+            //     setFetching(false);
+            // }
         };
         fetchSettings();
     }, []);
