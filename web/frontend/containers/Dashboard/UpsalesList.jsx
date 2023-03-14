@@ -68,7 +68,7 @@ const ListItem = ({
           {...rest}
           id={item.id}
           onClick={
-            (id) => navigate(`/upsale/${id}`)
+            (id) => navigate(`/upsell/${id}`)
             // navigate({
             //     path
             // })
