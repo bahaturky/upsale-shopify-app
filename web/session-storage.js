@@ -3,7 +3,7 @@ import models from "./models/index.js";
 
 class MySessionStorage {
     async storeSession(session) {
-        // console.log("storesession", session);
+        console.log("storesession", session);
         try {
             await this.upsert(session, { id: session.id });
             return true;
@@ -33,8 +33,9 @@ class MySessionStorage {
                 where: { id: id },
                 raw: true,
             });
+            console.log(row)
             if (row) return this.makeSessionPropertyArray(row);
-            return [];
+            return undefined;
         } catch (error) {
             console.error(error);
             return undefined;
