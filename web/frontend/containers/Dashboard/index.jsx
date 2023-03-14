@@ -86,7 +86,7 @@ const Index = ({ t }) => {
     if (upsales) filteredUpsales = upsales.filter((u) => u.isActive);
 
     const goNewUpsell = () => {
-        navigate(`/upsale/new`);
+        navigate(`/upsell/new`);
     };
 
     const dismissSetup = async (save = false) => {
