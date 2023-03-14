@@ -48,9 +48,9 @@ const Index = ({ t }) => {
                     (res) => res.json()
                 );
 
-                if (upsales) {
-                    setUpsales(upsales);
-                }
+                // if (upsales) {
+                //     setUpsales(upsales);
+                // }
 
                 setFetching(false);
             } catch (err) {
