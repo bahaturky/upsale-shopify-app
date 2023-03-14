@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     TextField as PolarisTextField,
 } from "@shopify/polaris";
@@ -6,7 +6,9 @@ import { usePolarisField } from "./usePolarisField";
 
 function TextField(props) {
     const { name, encode, decode, validate, ...polarisProps } = props;
-
+    useEffect(() => {
+        console.log('Text Fields')
+    }, [])
     const {
         value: rawValue,
         isSubmitting,
