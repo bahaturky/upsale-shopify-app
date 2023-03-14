@@ -329,6 +329,10 @@ app.get('/cart.js', (req, res) => {
     res.sendFile(join(__dirname, './cart.js'))
 })
 
+app.get('/logo.svg', (req, res) => {
+    res.sendFile(join(__dirname, '../frontend/assets/logo.svg'))
+})
+
 app.get("/locales/*", (req, res) => {
     res.sendFile(join(__dirname, "../frontend/", req.url));
 });

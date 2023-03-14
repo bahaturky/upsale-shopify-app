@@ -45,7 +45,7 @@ const TitleBarC = ({ breadcrumbs, title, t }) => {
                 title={title}
                 primaryAction={{
                     content: t("new-upsell"),
-                    onAction: () => navigate("/upsale/new"),
+                    onAction: () => navigate("/upsell/new"),
                 }}
                 secondaryActions={secondaryActions}
                 breadcrumbs={breadcrumbs || null}
