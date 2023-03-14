@@ -3,7 +3,7 @@ import models from "./models/index.js";
 
 class MySessionStorage {
     async storeSession(session) {
-        console.log("storesession", session);
+        // console.log("storesession", session);
         try {
             await this.upsert(session, { id: session.id });
             return true;
@@ -27,13 +27,13 @@ class MySessionStorage {
     }
 
     async loadSession(id) {
-        console.log("loadSession", id);
+        // console.log("loadSession", id);
         try {
             const row = await models.Session.findOne({
                 where: { id: id },
                 raw: true,
             });
-            console.log(row)
+            // console.log(row)
             if (row) return this.makeSessionPropertyArray(row);
             return undefined;
         } catch (error) {
