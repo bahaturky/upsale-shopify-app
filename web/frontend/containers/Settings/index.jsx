@@ -54,7 +54,7 @@ const Index = ({ t }) => {
 
                 setFetching(false);
             } catch (err) {
-                console.error(err);
+                console.error('useEffect Error', err);
                 setFetching(false);
             }
         };
