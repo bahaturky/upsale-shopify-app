@@ -191,7 +191,7 @@ const Index = ({ t }) => {
                             )}
                             <div className="relative">
                                 <Form>
-                                    <div className="w-full md:w-350px">
+                                    {/* <div className="w-full md:w-350px">
                                         <P.Layout>
                                             <P.Layout.Section secondary>
                                                 <div className="hidden md:block">
@@ -762,7 +762,7 @@ const Index = ({ t }) => {
                                                 loading: isSubmitting,
                                             }}
                                         />
-                                    </div>
+                                    </div> */}
                                 </Form>
                             </div>
                         </>
