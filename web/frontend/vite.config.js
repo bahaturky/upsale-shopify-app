@@ -64,7 +64,7 @@ export default defineConfig({
             "^/api(/|(\\?.*)?$)": proxyOptions,
         },
         fs: {
-            // allow: [join(dirname(fileURLToPath(import.meta.url)), "../widget")],
+            allow: [join(dirname(fileURLToPath(import.meta.url)), "../widget"), './'],
         },
     },
 });

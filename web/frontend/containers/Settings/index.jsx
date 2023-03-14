@@ -44,13 +44,13 @@ const Index = ({ t }) => {
                     setShop({ ...shop, settings: parsedSettings });
                 }
 
-                // const upsales = await fetch(`/api/upsales`).then(
-                //     (res) => res.json()
-                // );
+                const upsales = await fetch(`/api/upsales`).then(
+                    (res) => res.json()
+                );
 
-                // if (upsales) {
-                //     setUpsales(upsales);
-                // }
+                if (upsales) {
+                    setUpsales(upsales);
+                }
 
                 setFetching(false);
             } catch (err) {

@@ -11,7 +11,7 @@ import {
 } from "@shopify/polaris";
 import { useField } from "formik";
 import { ResourcePicker } from "@shopify/app-bridge-react";
-import { Fragment, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 const IMAGE_PLACEHOLDER =
     "https://res.cloudinary.com/island/image/upload/v1626748982/no-product_cw8wg6.png";
