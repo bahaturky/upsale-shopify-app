@@ -358,7 +358,7 @@ const getPublicData = async (req, res) => {
                                                 collectionsQuery
                                             );
 
-                                        collectionsResponse.collectionByHandle.products.edges.map(
+                                        collectionsResponse.collectionByHandle?.products?.edges.map(
                                             (e) => {
                                                 productsArr.push(e);
                                             }
@@ -366,7 +366,7 @@ const getPublicData = async (req, res) => {
 
                                         if (
                                             collectionsResponse
-                                                .collectionByHandle.products
+                                                .collectionByHandle?.products
                                                 .pageInfo.hasNextPage
                                         ) {
                                             const lastIndex = perPage - 1;
