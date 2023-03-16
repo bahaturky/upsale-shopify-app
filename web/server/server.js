@@ -14,6 +14,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import shopify, { checkSubscription, initializeShop } from "../shopify.js";
 import productCreator from "../product-creator.js";
 import GDPRWebhookHandlers from "../gdpr.js";
+import GDPRWebhookHandlers1 from "../gdpr1.js";
 
 import UpsaleHandler from "./handlers/upsales.handlers.js";
 import ShopHandler from "./handlers/shops.handlers.js";
@@ -58,6 +59,12 @@ app.get(
             accessToken,
             apiVersion: LATEST_API_VERSION,
         });
+
+        const result = await shopify.rest.Webhook.all({
+            session: res.locals.shopify.session,
+        });
+
+        console.log(result)
 
         // res.shopify = shopifyNode;
 
@@ -109,6 +116,11 @@ app.get(
 app.post(
     shopify.config.webhooks.path,
     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
+);
+
+app.post(
+    '/webhooks/products/delete',
+    shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers1 })
 );
 
 app.get("/upsales/:upsaleId/redirect", async (req, res) => {
