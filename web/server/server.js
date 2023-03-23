@@ -52,60 +52,64 @@ app.get(
     shopify.config.auth.callbackPath,
     shopify.auth.callback(),
     async (req, res, next) => {
-        const { shop, accessToken } = res.locals.shopify.session;
+        try {
+            const { shop, accessToken } = res.locals.shopify.session;
 
-        const shopifyNode = new Shopify({
-            shopName: shop.split(".myshopify")[0],
-            accessToken,
-            apiVersion: LATEST_API_VERSION,
-        });
+            const shopifyNode = new Shopify({
+                shopName: shop.split(".myshopify")[0],
+                accessToken,
+                apiVersion: LATEST_API_VERSION,
+            });
 
-        const result = await shopify.rest.Webhook.all({
-            session: res.locals.shopify.session,
-        });
+            const result = await shopify.rest.Webhook.all({
+                session: res.locals.shopify.session,
+            });
 
-        console.log(result)
+            console.log(result)
 
-        // res.shopify = shopifyNode;
+            // res.shopify = shopifyNode;
 
-        const shopData = await shopifyNode.shop.get();
-        console.log(req.headers["x-forwarded-for"]);
+            const shopData = await shopifyNode.shop.get();
+            console.log(req.headers["x-forwarded-for"]);
 
-        const shopDB = await models.Shop.findOne({
-            where: {
-                domain: shop,
-            },
-            raw: true,
-        });
-
-        await initializeShop(res, shopifyNode, shopData);
-        // console.log(shop, accessToken);
-        // // const shopData = await;
-        // // const shopData = await shopify.shop.get();
-        // console.log(shopData);
-        request(
-            {
-                method: "POST",
-                url: "https://platform.shoffi.app/v1/newMerchant",
-                headers: {
-                    "Content-Type": "application/json",
+            const shopDB = await models.Shop.findOne({
+                where: {
+                    domain: shop,
                 },
-                body: JSON.stringify({
-                    api_key: process.env.SHOPIFY_API_KEY,
-                    shopName: shop,
-                    appId: shopData.id,
-                    XFF: req.headers["x-forwarded-for"],
-                }),
-            },
-            function (error, response) {
-                if (error) {
-                    console.log("shoffi error", error);
-                }
-                console.log("shoffi response.body", response.body);
-            }
-        );
+                raw: true,
+            });
 
-        next();
+            await initializeShop(res, shopifyNode, shopData);
+            // console.log(shop, accessToken);
+            // // const shopData = await;
+            // // const shopData = await shopify.shop.get();
+            // console.log(shopData);
+            request(
+                {
+                    method: "POST",
+                    url: "https://platform.shoffi.app/v1/newMerchant",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        api_key: process.env.SHOPIFY_API_KEY,
+                        shopName: shop,
+                        appId: shopData.id,
+                        XFF: req.headers["x-forwarded-for"],
+                    }),
+                },
+                function (error, response) {
+                    if (error) {
+                        console.log("shoffi error", error);
+                    }
+                    console.log("shoffi response.body", response.body);
+                }
+            );
+        } catch (error) {
+            console.error(error, 'callback error')
+        } finally {
+            next();
+        }
     },
     shopify.redirectToShopifyOrAppRoot()
 );
