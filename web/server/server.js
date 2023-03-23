@@ -65,7 +65,7 @@ app.get(
                 session: res.locals.shopify.session,
             });
 
-            console.log(result)
+            console.log(result, '?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
 
             // res.shopify = shopifyNode;
 
