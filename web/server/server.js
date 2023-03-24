@@ -66,11 +66,6 @@ app.get(
                 apiVersion: LATEST_API_VERSION,
             });
 
-            const result = await shopify.rest.Webhook.all({
-                session: res.locals.shopify.session,
-            });
-
-
             // res.shopify = shopifyNode;
 
             const shopData = await shopifyNode.shop.get();
