@@ -216,6 +216,12 @@ export const initializeShop = async (res, shopifyNode, shopData) => {
     addScriptTag(shopifyNode);
 };
 
+export const initializeShop1 = async (res, shopifyNode, shopData) => {
+    await shopsHandlers.create1(res, shopifyNode, shopData);
+
+    addScriptTag(shopifyNode);
+};
+
 export const checkSubscription = async (req, res, next) => {
     try {
 

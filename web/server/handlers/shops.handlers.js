@@ -153,6 +153,137 @@ const create = async (res, shopify, shopData) => {
     }
 };
 
+const create1 = async (res, shopify, shopData) => {
+    try {
+        const { shop, accessToken } = res;
+
+        let shopDB = await models.Shop.findOne({ where: { domain: shop } });
+
+        let isNew = false;
+
+        const plan = shopData.plan_name;
+
+        const shopDataToAdd = {
+            email: shopData.email,
+            customerEmail: shopData.customer_email,
+            shopName: shopData.name,
+            owner: shopData.shop_owner,
+            plan,
+            city: shopData.city,
+            countryName: shopData.country_name,
+            currency: shopData.currency,
+            shopCreatedOn: shopData.created_at,
+            moneyFormat: shopData.money_format,
+        };
+
+        if (freePlans.includes(plan)) {
+            shopDataToAdd.isSubscriptionActive = true;
+        }
+
+        if (!shopDB) {
+            isNew = true;
+
+            // const affiliate = ctx.cookies.get("island-partner") || null;
+            const affiliate = null;
+
+            shopDB = await models.Shop.create({
+                domain: shop,
+                accessToken,
+                ...shopDataToAdd,
+                affiliate,
+            });
+
+            if (
+                !process.env.IS_OFFLINE &&
+                shopDataToAdd.email !== "julian@canopyand.co"
+            ) {
+                let isEarlyBird = null;
+
+                try {
+                    const early50 = JSON.parse(
+                        fs.readFileSync("early-50.json")
+                    );
+                    const early100 = JSON.parse(
+                        fs.readFileSync("early-100.json")
+                    );
+
+                    if (early50.includes(shop)) isEarlyBird = 50;
+                    if (early100.includes(shop)) isEarlyBird = 100;
+                } catch (err) {
+                    console.log("telesend earlybird err", err);
+                }
+            }
+        } else {
+            await shopDB.update({
+                accessToken,
+                ...shopDataToAdd,
+            });
+        }
+
+        // We create a few upsales to new users so their dashboard is not empty
+        // And they can start experimenting right away
+        console.log("isNew", isNew);
+
+        if (isNew) {
+            let i = 0;
+
+            const IMAGES_HOST =
+                "https://res.cloudinary.com/island/image/upload/v1627982780";
+
+            await asyncForEach(
+                generatedUpsales,
+                async ({ title, desc, price, compare_at_price, img }) => {
+                    try {
+                        console.log(
+                            `${i + 1}/${generatedUpsales.length} - ${title}`
+                        );
+
+                        const newCustomProduct = await shopify.product.create({
+                            title,
+                            body_html: desc,
+                            product_type: "island_generated",
+                            published_scope: "web",
+                            variants: [
+                                {
+                                    price,
+                                    compare_at_price,
+                                    requires_shipping: false,
+                                    inventory_policy: "continue",
+                                },
+                            ],
+                            images: [
+                                {
+                                    src: `${IMAGES_HOST}/${img}.png`,
+                                },
+                            ],
+                        });
+
+                        await models.Upsale.create({
+                            shopId: shopDB.id,
+                            gId: newCustomProduct.admin_graphql_api_id,
+                            title: title,
+                            desc: desc,
+                            isActive: false,
+                            selectedVariants: ["all"],
+                            position: i++,
+                            targets: JSON.stringify(["all"]),
+                        });
+                    } catch (err) {
+                        console.log(err.message || err);
+                    }
+                }
+            );
+        }
+
+        // ctx.body = shop;
+        // res.json(shop);
+        return shop;
+    } catch (err) {
+        console.log("create shop err", err);
+        // res.sendStatus(422);
+    }
+};
+
 const updateSettings = async (req, res) => {
     try {
         const { shop, accessToken } = res.locals.shopify.session;
@@ -473,5 +604,6 @@ export default {
     toggleApp,
     get,
     create,
+    create1,
     updateSettings,
 };

@@ -1,5 +1,8 @@
 import { Session } from "@shopify/shopify-api";
 import models from "./models/index.js";
+import { LATEST_API_VERSION } from "@shopify/shopify-api";
+import Shopify from "shopify-api-node";
+import { initializeShop1 } from "./shopify.js";
 
 class MySessionStorage {
     async storeSession(session) {
@@ -27,14 +30,24 @@ class MySessionStorage {
     }
 
     async loadSession(id) {
-        // console.log("loadSession", id);
+        console.log("loadSession", id);
         try {
             const row = await models.Session.findOne({
                 where: { id: id },
                 raw: true,
             });
-            // console.log(row)
-            if (row) return this.makeSessionPropertyArray(row);
+            console.log(row)
+
+            if (row && row.shop) {
+                const shopDB = await models.Shop.findOne({
+                    where: {
+                        domain: row.shop,
+                    },
+                    raw: true,
+                });
+                
+                if (shopDB) return this.makeSessionPropertyArray(row);
+            }
             return undefined;
         } catch (error) {
             console.error(error);
