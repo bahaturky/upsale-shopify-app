@@ -50,9 +50,14 @@ const app = express();
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
     shopify.config.auth.callbackPath,
+    async (req, res, next) => {
+        console.log(req.query)
+        next()
+    },
     shopify.auth.callback(),
     async (req, res, next) => {
         try {
+            // console.log(result, '?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
             const { shop, accessToken } = res.locals.shopify.session;
 
             const shopifyNode = new Shopify({
@@ -65,7 +70,6 @@ app.get(
                 session: res.locals.shopify.session,
             });
 
-            console.log(result, '?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
 
             // res.shopify = shopifyNode;
 
@@ -122,10 +126,10 @@ app.post(
     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
-app.post(
-    '/webhooks/products/delete',
-    shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers1 })
-);
+// app.post(
+//     '/webhooks/products/delete',
+//     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers1 })
+// );
 
 app.get("/upsales/:upsaleId/redirect", async (req, res) => {
     try {
