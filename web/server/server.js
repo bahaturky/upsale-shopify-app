@@ -121,10 +121,10 @@ app.post(
     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
-// app.post(
-//     '/webhooks/products/delete',
-//     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers1 })
-// );
+app.post(
+    '/webhooks/products/delete',
+    shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers1 })
+);
 
 app.get("/upsales/:upsaleId/redirect", async (req, res) => {
     try {
