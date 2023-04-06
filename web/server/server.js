@@ -372,6 +372,8 @@ app.use("/widget/build/static/js/:filename", async (req, res) => {
 //     res.sendFile(join(__dirname, ''))
 // })
 
+app.post("/api/food", AnalyticsHandler.track);
+
 // All endpoints after this point will require an active session
 app.use(
     "/api/*",
@@ -392,7 +394,6 @@ app.use(
 
 app.use(express.json());
 
-app.post("/api/food", AnalyticsHandler.track);
 
 // Early birds when they install the app from the early offer pages
 app.post("/api/early", EarlyHandler.add);
