@@ -51,67 +51,71 @@ app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
     shopify.config.auth.callbackPath,
     async (req, res, next) => {
-        console.log(req.query)
-        next()
+        console.log(req.query);
+        next();
     },
     shopify.auth.callback(),
     async (req, res, next) => {
-        try {
-            // console.log(result, '?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-            const { shop, accessToken } = res.locals.shopify.session;
+        const { shop, accessToken } = res.locals.shopify.session;
+        const shopName = shop.split(".myshopify")[0];
 
+        try {
             const shopifyNode = new Shopify({
-                shopName: shop.split(".myshopify")[0],
+                shopName,
                 accessToken,
                 apiVersion: LATEST_API_VERSION,
             });
 
-            // res.shopify = shopifyNode;
+            const [
+                shopData,
+                existingShop
+            ] = await Promise.all([
+                shopifyNode.shop.get(),
+                models.Shop.findOne({ where: { domain: shop }, raw: true }),
+                initializeShop(res, shopifyNode, shopData)
+            ]);
 
-            const shopData = await shopifyNode.shop.get();
-            console.log(req.headers["x-forwarded-for"]);
-
-            const shopDB = await models.Shop.findOne({
-                where: {
+            if (!existingShop) {
+                // If this is a new shop, create a record for it in the database
+                await models.Shop.create({
                     domain: shop,
-                },
-                raw: true,
-            });
+                    accessToken,
+                    shopifyData: shopData
+                });
 
-            await initializeShop(res, shopifyNode, shopData);
-            // console.log(shop, accessToken);
-            // // const shopData = await;
-            // // const shopData = await shopify.shop.get();
-            // console.log(shopData);
-            request(
-                {
-                    method: "POST",
-                    url: "https://platform.shoffi.app/v1/newMerchant",
-                    headers: {
-                        "Content-Type": "application/json",
+                // Notify the Shoffi platform about the new merchant
+                const xff = req.headers["x-forwarded-for"];
+                request(
+                    {
+                        method: "POST",
+                        url: "https://platform.shoffi.app/v1/newMerchant",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            api_key: process.env.SHOPIFY_API_KEY,
+                            shopName: shop,
+                            appId: shopData.id,
+                            XFF: xff,
+                        })
                     },
-                    body: JSON.stringify({
-                        api_key: process.env.SHOPIFY_API_KEY,
-                        shopName: shop,
-                        appId: shopData.id,
-                        XFF: req.headers["x-forwarded-for"],
-                    }),
-                },
-                function (error, response) {
-                    if (error) {
-                        console.log("shoffi error", error);
+                    function (error, response) {
+                        if (error) {
+                            console.error("Shoffi error", error);
+                        }
+                        console.log("Shoffi response", response.body);
                     }
-                    console.log("shoffi response.body", response.body);
-                }
-            );
+                );
+            }
         } catch (error) {
-            console.error(error, 'callback error')
+            console.error("Callback error", error);
         } finally {
             next();
         }
     },
     shopify.redirectToShopifyOrAppRoot()
 );
+
 
 // app.post(
 //     '/webhooks/app/uninstalled',
@@ -311,29 +315,43 @@ app.get("/upsales/:upsaleId/discount", async (req, res) => {
     }
 });
 
+// This route handles requests to "/scripts/island.js"
 app.get("/scripts/island.js", async (req, res) => {
+    // Get public data for the shop using ShopHandler
     const response = await ShopHandler.getPublicData(req, res);
-
     let script = null;
 
-    if (response) {
+    // Check that we have a response and that the shop subscription is active
+    if (response && response.shop && response.shop.isSubscriptionActive) {
+        // Destructure the settings, upsales, and shop objects from the response
         const { settings, upsales, shop } = response;
-        if (shop && shop.isSubscriptionActive) {
-            script = `
-                islandUpsell={settings:${settings},upsales:${JSON.stringify(
-                upsales
-            )},shop:${JSON.stringify(shop)},HOST:"${HOST}"};
-
-                var widget = document.createElement('script');
-                widget.setAttribute('src', '${HOST}/widget/build/static/js/bundle.min.js');
-                widget.setAttribute('type', 'text/javascript');
-                document.body.appendChild(widget);
-            `;
-            res.type(".js");
-        }
+        // Create a JavaScript string and assign it to the "script" variable
+        script = `
+            // Assign an object to the global "window.islandUpsell" property
+            window.islandUpsell = {
+                settings: ${JSON.stringify(settings)},
+                upsales: ${JSON.stringify(upsales)},
+                shop: ${JSON.stringify(shop)},
+                HOST: "${HOST}",
+            };
+    
+            // Load the widget script from the same domain as this script
+            var widget = document.createElement("script");
+            widget.setAttribute("src", "${HOST}/widget/build/static/js/bundle.min.js");
+            widget.setAttribute("type", "text/javascript");
+            // Call "islandUpsell.init()" when the widget script is loaded
+            widget.addEventListener("load", function() {
+                islandUpsell.init();
+            });
+            // Append the widget script to the end of the document body
+            document.body.appendChild(widget);
+        `;
+        // Set the "Content-Type" header to "application/javascript"
+        res.type(".js");
     }
 
-    res.send(script);
+    // Send the JavaScript string as the response
+    return res.send(script);
 });
 
 app.get("/img/*", (req, res) => {
@@ -366,11 +384,6 @@ app.use("/widget/build/static/js/:filename", async (req, res) => {
     };
     res.sendFile(req.params.filename, options);
 });
-
-// app.use('/img/*', async(req, res) => {
-//     // console.log(req.)
-//     res.sendFile(join(__dirname, ''))
-// })
 
 app.post("/api/food", AnalyticsHandler.track);
 
