@@ -330,10 +330,7 @@ app.get("/scripts/island.js", async (req, res) => {
             var widget = document.createElement("script");
             widget.setAttribute("src", "${HOST}/widget/build/static/js/bundle.min.js");
             widget.setAttribute("type", "text/javascript");
-            // Call "islandUpsell.init()" when the widget script is loaded
-            widget.addEventListener("load", function() {
-                islandUpsell.init();
-            });
+            
             // Append the widget script to the end of the document body
             document.body.appendChild(widget);
         `;
@@ -387,13 +384,14 @@ app.use('/api/food', (req, res, next) => {
     // Request headers you wish to allow
     res.setHeader('Access-Control-Allow-Headers', '*');
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
 
     // Pass to next layer of middleware
     next();
 })
+app.use(express.json());
 
 app.post("/api/food", AnalyticsHandler.track);
 
@@ -415,7 +413,7 @@ app.use(
     }
 );
 
-app.use(express.json());
+
 
 
 // Early birds when they install the app from the early offer pages
