@@ -40,12 +40,6 @@ const STATIC_PATH =
 
 const app = express();
 
-// app.use("/*", async (req, res, next) => {
-//     console.log(req.url, "test");
-//     // res.send('ok');
-
-// });
-
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
@@ -72,8 +66,9 @@ app.get(
             ] = await Promise.all([
                 shopifyNode.shop.get(),
                 models.Shop.findOne({ where: { domain: shop }, raw: true }),
-                initializeShop(res, shopifyNode, shopData)
             ]);
+
+            await initializeShop(res, shopifyNode, shopData)
 
             if (!existingShop) {
                 // If this is a new shop, create a record for it in the database
@@ -116,10 +111,6 @@ app.get(
     shopify.redirectToShopifyOrAppRoot()
 );
 
-
-// app.post(
-//     '/webhooks/app/uninstalled',
-// )
 app.post(
     shopify.config.webhooks.path,
     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
