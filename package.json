@@ -13,8 +13,8 @@
     "serve": "cross-env NODE_ENV=production node web/index.js"
   },
   "dependencies": {
-    "@shopify/app": "3.43.0",
-    "@shopify/cli": "3.43.0",
+    "@shopify/app": "3.45.1",
+    "@shopify/cli": "3.45.1",
     "cross-env": "^7.0.3"
   },
   "author": "ubuntu"

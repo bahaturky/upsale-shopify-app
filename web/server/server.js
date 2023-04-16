@@ -110,14 +110,14 @@ app.get(
     },
     shopify.redirectToShopifyOrAppRoot()
 );
-
+console.log(shopify.config.webhooks.path)
 app.post(
     shopify.config.webhooks.path,
     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
 app.post(
-    '/webhooks/products/delete',
+    '/webhooks',
     shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers1 })
 );
 
@@ -403,7 +403,10 @@ app.use(
     shopify.validateAuthenticatedSession(),
     async (req, res, next) => {
         const { shop, accessToken } = res.locals.shopify.session;
-
+        const webhooks = await shopify.api.rest.Webhook.all({
+            session: res.locals.shopify.session,
+        });
+        // console.log(webhooks)
         const shopifyNode = new Shopify({
             shopName: shop.split(".myshopify")[0],
             accessToken,
